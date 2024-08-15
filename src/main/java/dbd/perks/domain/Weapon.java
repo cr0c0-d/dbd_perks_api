@@ -10,16 +10,12 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-public class Item {
-
+public class Weapon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Long id;
-
-    @Column
-    private String en_name;
 
     @Column
     private String tag;
@@ -28,7 +24,10 @@ public class Item {
     private String name;
 
     @Column
-    private String level;
+    private String skill;
+
+    @Column
+    private String en_name;
 
     @Column
     private String description;

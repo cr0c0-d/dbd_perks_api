@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-public class Item {
-
+public class Offering {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,9 +21,6 @@ public class Item {
     private String en_name;
 
     @Column
-    private String tag;
-
-    @Column
     private String name;
 
     @Column
@@ -32,9 +28,6 @@ public class Item {
 
     @Column
     private String description;
-
-    @Column
-    private String lang;
 
     @Column
     private String icon;
