@@ -1,18 +1,19 @@
 package dbd.perks.crawler;
 
-import dbd.perks.domain.Character;
+import dbd.perks.domain.Playable;
 import dbd.perks.domain.Item;
 import dbd.perks.domain.Perk;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Service
 public class DataCrawler {
 
     /**
@@ -35,9 +36,9 @@ public class DataCrawler {
      */
     private List<String> killerDocsLinkUrlList = new ArrayList<>();
 
-    private List<Character> killerList = new ArrayList<>();
+    private List<Playable> killerList = new ArrayList<>();
 
-    private List<Character> survivorList = new ArrayList<>();
+    private List<Playable> survivorList = new ArrayList<>();
 
     private List<Perk> perkList = new ArrayList<>();
 
@@ -50,7 +51,7 @@ public class DataCrawler {
             Document document = Jsoup.connect(killerDocsListUrl).get();
 
             // 문서 목록 요소 선택 (다수일 경우 첫 번째 요소)
-            Element listDiv = document.select("_1mly7SSR").get(0);
+            Element listDiv = document.select("._1mly7SSR").get(0);
 
             // 살인마 개별 문서 링크에 해당하는 div 목록 추출
             List<Element> filteredDivList = listDiv.children().stream().filter(div ->
