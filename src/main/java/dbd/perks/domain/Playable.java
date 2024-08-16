@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-public class Character {
+public class Playable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
