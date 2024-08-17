@@ -44,6 +44,9 @@ public class DataCrawler {
 
     private List<Item> itemList = new ArrayList<>();
 
+    /**
+     * 킬러 개별 문서의 url 주소를 조회하는 함수
+     */
     public void getKillerDocUrlList() {
         try {
 
@@ -62,46 +65,43 @@ public class DataCrawler {
             // 추출된 div -> li -> a 요소의 href 속성을 불러와 목록에 추가
             filteredDivList.stream().forEach(element -> element.children().select("li").forEach(li -> killerDocsLinkUrlList.add(li.select("a").attr("href"))));
 
-            System.out.println(killerDocsLinkUrlList);
-
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // 살인마 문서 url 목록이 비어 있지 않을 경우 다음 단계로
+        if(!killerDocsLinkUrlList.isEmpty()) {
+            getKillersData();
         }
     }
 
-    public List<Perk> getKillerDocs() {
+    /**
+     * 수집된 킬러 개별 문서 Url에 접근해 각 킬러의 데이터 수집
+     */
+    public void getKillersData() {
+        // 킬러 개별 문서 url이 수집되지 않았으면 return
+        if(killerDocsLinkUrlList.isEmpty()) {
+            return;
+        }
 
         try {
-            // URL에서 HTML 문서 가져오기
-            //Document doc = Jsoup.connect("https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EA%B8%B0%EC%88%A0").get();
-            Document killerDocsListDocument = Jsoup.connect(killerDocsListUrl).get();
 
-            Elements killerDocsList = killerDocsListDocument.select("li");
+            for(String url : killerDocsLinkUrlList) {
+                Document document = Jsoup.connect(namuWikiDomain + url).get();
 
+                Elements tables = document.select(".AVEibs0x");
 
+                for(Element table : tables) {
 
-            for (Element li : killerDocsList) {
-                if(li.childrenSize() != 0 && li.child(0).is("a")) {
-                    String linkUrl = li.child(0).attr("href");
-                    if(linkUrl.startsWith("/w")) {
-                        killerDocsLinkUrlList.add(namuWikiDomain + linkUrl);
-                    }
                 }
-
+                System.out.println(tables);
             }
-            System.out.println(killerDocsLinkUrlList);
-
-            // 특정 요소 선택 (예: 모든 <a> 태그)
-//            Elements links = doc.select("a");
-//            for (Element link : links) {
-//                System.out.println("링크: " + link.attr("href")); // 링크 URL
-//                System.out.println("링크 텍스트: " + link.text()); // 링크 텍스트
-//            }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
-        return null;
+
+
     }
 }
