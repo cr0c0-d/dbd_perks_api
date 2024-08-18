@@ -3,6 +3,8 @@ package dbd.perks.crawler;
 import dbd.perks.domain.Playable;
 import dbd.perks.domain.Item;
 import dbd.perks.domain.Perk;
+import dbd.perks.repository.PlayableRepository;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DataCrawler {
+
+    private final PlayableRepository playableRepository;
 
     /**
      * 나무위키 도메인
@@ -92,10 +97,28 @@ public class DataCrawler {
 
                 Elements tables = document.select(".AVEibs0x");
 
-                for(Element table : tables) {
+                Element profileTable = null;
 
+                // 프로필 영역 table 요소 찾기
+                for(Element table : tables) {
+                    if(table.text().contains("고유 테마") && table.text().contains("특수 능력")) {
+                        profileTable = table;
+                        break;
+                    }
                 }
-                System.out.println(tables);
+
+                if(profileTable == null) {
+                    continue;
+                }
+                // 프로필 영역의 span 요소만 찾기
+                Elements textElements = profileTable.select("span");
+
+                Playable player = Playable.builder().build();
+
+                player.setEn_name(textElements.get(2).ownText());
+                player.setName(textElements.get(3).ownText());
+
+                playableRepository.save(player);
             }
         } catch(IOException e) {
             e.printStackTrace();
