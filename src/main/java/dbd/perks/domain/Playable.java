@@ -1,8 +1,7 @@
 package dbd.perks.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -10,6 +9,8 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Playable {
 
     @Id
@@ -32,4 +33,12 @@ public class Playable {
     @CreatedDate
     @Column
     private LocalDateTime created_at;
+
+    @Builder
+    public Playable(String en_name, String name, String name_tag, String nickname) {
+        this.en_name = en_name;
+        this.name = name;
+        this.name_tag = name_tag;
+        this.nickname = nickname;
+    }
 }
