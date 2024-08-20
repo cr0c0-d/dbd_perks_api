@@ -1,8 +1,7 @@
 package dbd.perks.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,15 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Perk {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Long id;
-
-    @Column
-    private String perk_tag;
 
     @Column
     private String role;
@@ -32,33 +30,32 @@ public class Perk {
     private String en_name;
 
     @Column
-    private String name_tag;
+    private String playable_name;
 
     @Column
-    private String perk_name;
+    private String playable_en_name;
 
     @Column
     private String description;
 
     @Column
-    private String lang;
+    private String dlc;
 
     @Column
-    private String level;
-
-    @Column
-    private String DLC;
-
-    @Column
-    private String icon;
-
-    @Column
-    private String tags;
-
-    @Column
-    private String own;
+    private String img;
 
     @CreatedDate
     @Column
     private LocalDateTime created_at;
+
+    @Builder
+    public Perk(String role, String name, String en_name, String playable_name, String playable_en_name, String description, String img) {
+        this.role = role;
+        this.name = name;
+        this.en_name = en_name;
+        this.playable_name = playable_name;
+        this.playable_en_name = playable_en_name;
+        this.description = description;
+        this.img = img;
+    }
 }
