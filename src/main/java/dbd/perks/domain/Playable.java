@@ -21,6 +21,9 @@ public class Playable {
     private Long id;
 
     @Column
+    private String role;
+
+    @Column
     private String en_name;
 
     @Column
@@ -37,7 +40,8 @@ public class Playable {
     private LocalDateTime created_at;
 
     @Builder
-    public Playable(String en_name, String name, String name_tag, String nickname) {
+    public Playable(String role, String en_name, String name, String name_tag, String nickname) {
+        this.role = role;
         this.en_name = en_name;
         this.name = name;
         this.name_tag = name_tag;
