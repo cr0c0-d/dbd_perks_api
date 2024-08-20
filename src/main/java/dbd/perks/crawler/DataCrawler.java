@@ -110,11 +110,14 @@ public class DataCrawler {
                 if(profileTable == null) {
                     continue;
                 }
-                // 프로필 영역의 span 요소만 찾기
-                Elements textElements = profileTable.select("span.jrW0Zn5O, span.jrW0Zn5O div, span.jrW0Zn5O span");
                 Playable player = Playable.builder()
                         .role("killer")
                         .build();
+
+                /* 방법 1 : span 찾기
+                // 프로필 영역의 span 요소만 찾기
+                Elements textElements = profileTable.select("span.jrW0Zn5O, span.jrW0Zn5O div, span.jrW0Zn5O span");
+
 
                 for(Element text : textElements) {
                     String textStr = text.wholeOwnText();
@@ -131,6 +134,21 @@ public class DataCrawler {
                         break;
                     }
                 }
+
+                 */
+
+                /* 방법 2 : cssSelector로 찾기*/
+                Elements nameSpans = profileTable.select("tbody tr td div.Fm-HYseR div span strong span.jrW0Zn5O");
+                for(Element nameSpan : nameSpans) {
+                    if(nameSpan.childrenSize() > 1) {
+                        player.setEn_name(nameSpan.child(0).ownText());
+                        player.setName(nameSpan.child(nameSpan.childrenSize() - 1).ownText());
+                    }
+                }
+
+
+
+                // 한글명과 영문명 둘 다 찾은 경우 리스트에 추가
                 if(player.getName() != null && player.getEn_name() != null) {
                     killerList.add(player);
                 }
