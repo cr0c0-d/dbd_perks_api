@@ -3,6 +3,7 @@ package dbd.perks.crawler;
 import dbd.perks.domain.Playable;
 import dbd.perks.domain.Item;
 import dbd.perks.domain.Perk;
+import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
@@ -20,6 +21,7 @@ import java.util.List;
 public class DataCrawler {
 
     private final PlayableRepository playableRepository;
+    private final PerkRepository perkRepository;
 
     /**
      * 나무위키 도메인
@@ -146,12 +148,15 @@ public class DataCrawler {
                     }
                 }
 
-
-
                 // 한글명과 영문명 둘 다 찾은 경우 리스트에 추가
                 if(player.getName() != null && player.getEn_name() != null) {
                     killerList.add(player);
                 }
+
+                List<Perk> perks = getKillerPerks(document, player);
+
+                perkRepository.saveAll(perks);
+
             }
 
             playableRepository.saveAll(killerList);
@@ -161,5 +166,84 @@ public class DataCrawler {
 
 
 
+    }
+
+    /**
+     *  살인마 개별 문서 Document 객체와 살인마 Playable 객체를 받아, 해당 살인마의 고유 기술을 찾아 List 형태로 반환하는 함수
+     * @param document 살인마 개별 문서
+     * @param killer 살인마 객체
+     * @return Perk(고유 기술) 리스트
+     */
+    public List<Perk> getKillerPerks(Document document, Playable killer) {
+
+        List<Perk> perkList = new ArrayList<>();
+
+        // cssSelector로 고유 기술 영역 찾기
+        Elements perkDivs = document.select("div.Xg8bWR6v div.Xg8bWR6v div.Xg8bWR6v div.pukNZvf0 div.rQ4Wdu43 table tbody tr");
+        if(perkDivs.size() != 0 ) {
+
+            for (Element perkDiv : perkDivs) {
+
+                // 자식 요소가 3개여야 함 (각 캐릭터당 고유 기술 개수는 3개이므로)
+                if (perkDiv.childrenSize() != 3) {
+                    continue;
+                }
+
+                for (Element perkElement : perkDiv.children()) {
+
+                    Perk perk = Perk.builder()
+                            .role(killer.getRole())
+                            .playable_name(killer.getName())
+                            .playable_en_name(killer.getEn_name())
+                            .build();
+
+                    Elements spans = perkElement.select("div.Fm-HYseR div div.Fm-HYseR div div span");
+                    // 이미지 경로
+                    String imgSrc = spans.get(0).child(0).child(1).attr("src");
+
+                    // 한글명
+                    String name = spans.get(1).child(0).ownText();
+
+                    // 영문명
+                    String en_name = spans.get(2).child(0).ownText();
+
+                    // 설명
+                    String description = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0).wholeOwnText();
+
+                    perk.setName(name);
+                    perk.setEn_name(en_name);
+
+                    perkList.add(perk);
+                }
+            }
+        } else {    // 위 형식이 아닌 경우
+            perkDivs = document.select("div.Xg8bWR6v div div.pukNZvf0 div.rQ4Wdu43 table tbody");
+
+            for(Element perkElement : perkDivs) {
+                Perk perk = Perk.builder()
+                        .role(killer.getRole())
+                        .playable_name(killer.getName())
+                        .playable_en_name(killer.getEn_name())
+                        .build();
+
+                String imgSrc = perkElement.select("tr td div.Fm-HYseR a span span img.pSe7sj7a").attr("src");
+
+                Elements nameElement = perkElement.select("tr td div.Fm-HYseR strong a.yfQL42-A span");
+                String name = nameElement.get(0).ownText();
+                String en_name = nameElement.get(1).ownText();
+
+                String description = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0).ownText();
+
+                perk.setImg(imgSrc);
+                perk.setName(name);
+                perk.setEn_name(en_name);
+                perk.setDescription(description);
+
+                perkList.add(perk);
+
+            }
+        }
+
+        return perkList;
     }
 }
