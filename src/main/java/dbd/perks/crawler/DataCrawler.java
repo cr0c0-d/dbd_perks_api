@@ -101,7 +101,7 @@ public class DataCrawler {
 
                 // 프로필 영역 table 요소 찾기
                 for(Element table : tables) {
-                    if(table.text().contains("고유 테마") && table.text().contains("특수 능력")) {
+                    if(table.text().contains("속도") && table.text().contains("공포 범위")) {
                         profileTable = table;
                         break;
                     }
@@ -111,15 +111,32 @@ public class DataCrawler {
                     continue;
                 }
                 // 프로필 영역의 span 요소만 찾기
-                Elements textElements = profileTable.select("span");
+                Elements textElements = profileTable.select("span.jrW0Zn5O, span.jrW0Zn5O div, span.jrW0Zn5O span");
+                Playable player = Playable.builder()
+                        .role("killer")
+                        .build();
 
-                Playable player = Playable.builder().build();
+                for(Element text : textElements) {
+                    String textStr = text.wholeOwnText();
+                    // 영어로만 이루어진 경우 - 영문명
+                    if(textStr.matches("^[a-zA-Z\s]+$")) {
+                        player.setEn_name(textStr);
+                    } else if (textStr.matches("^[가-힣\s]+$")) {
+                        // 한글로만 이루어진 경우 - 한글명
+                        player.setName(textStr);
+                    }
 
-                player.setEn_name(textElements.get(2).ownText());
-                player.setName(textElements.get(3).ownText());
-
-                playableRepository.save(player);
+                    // 둘 다 찾았으면 break
+                    if(player.getName() != null && player.getEn_name() != null) {
+                        break;
+                    }
+                }
+                if(player.getName() != null && player.getEn_name() != null) {
+                    killerList.add(player);
+                }
             }
+
+            playableRepository.saveAll(killerList);
         } catch(IOException e) {
             e.printStackTrace();
         }
