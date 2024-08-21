@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Blob;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,7 +36,7 @@ public class Perk {
     @Column
     private String playable_en_name;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
