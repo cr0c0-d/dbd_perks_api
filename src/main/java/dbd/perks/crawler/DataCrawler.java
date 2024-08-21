@@ -178,18 +178,60 @@ public class DataCrawler {
 
         List<Perk> perkList = new ArrayList<>();
 
-        // cssSelector로 고유 기술 영역 찾기
-        Elements perkDivs = document.select("div.Xg8bWR6v div.Xg8bWR6v div.Xg8bWR6v div.pukNZvf0 div.rQ4Wdu43 table tbody tr");
-        if(perkDivs.size() != 0 ) {
+        Element title = document.selectFirst("div.Imb4r44D h2.mWdzG-BT span:contains(고유 기술)");
 
-            for (Element perkDiv : perkDivs) {
+//        Element perkDiv = .parent.parent().parent().parent().nextElementSibling();;
+
+//        for(Element title : titleElements) {
+//            if(title.ownText().equals("고유 기술")) {
+//                perkDiv = title.parent().parent().parent().nextElementSibling();
+//                break;
+//            }
+//        }
+
+        Elements perkTables = perkDiv.select("table tbody");
+
+        // perk마다 개별 table이 존재하는 유형
+        if(perkTables.size() == 3) {
+
+            for(Element perkElement : perkTables) {
+                Perk perk = Perk.builder()
+                        .role(killer.getRole())
+                        .playable_name(killer.getName())
+                        .playable_en_name(killer.getEn_name())
+                        .build();
+
+                String imgSrc = perkElement.select("noscript img.pSe7sj7a").attr("src");
+
+                Elements nameElement = perkElement.select("tr td div.Fm-HYseR strong");
+                nameElement = nameElement.select("span");
+
+                String name = nameElement.get(0).ownText();
+                String en_name = nameElement.get(1).ownText();
+
+                String description = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0).wholeText();
+
+                perk.setImg(imgSrc);
+                perk.setName(name);
+                perk.setEn_name(en_name);
+                perk.setDescription(description.replaceAll("\n", " "));
+
+                perkList.add(perk);
+
+            }
+
+
+        } else if (perkTables.size() == 1) { // 한 table에 합쳐진 유형
+            perkTables = perkTables.select("tr");
+
+            for (Element perkTable : perkTables) {
 
                 // 자식 요소가 3개여야 함 (각 캐릭터당 고유 기술 개수는 3개이므로)
                 if (perkDiv.childrenSize() != 3) {
                     continue;
                 }
 
-                for (Element perkElement : perkDiv.children()) {
+                for (Element perkElement : perkTable.children()) {
 
                     Perk perk = Perk.builder()
                             .role(killer.getRole())
@@ -199,50 +241,92 @@ public class DataCrawler {
 
                     Elements spans = perkElement.select("div.Fm-HYseR div div.Fm-HYseR div div span");
                     // 이미지 경로
-                    String imgSrc = spans.get(0).child(0).child(1).attr("src");
+                    String imgSrc = spans.select("noscript img").attr("src");
 
                     // 한글명
-                    String name = spans.get(1).child(0).ownText();
+                    String name = spans.select("span strong").get(0).ownText();
 
                     // 영문명
-                    String en_name = spans.get(2).child(0).ownText();
+                    String en_name = spans.select("span strong").get(1).ownText();
 
                     // 설명
-                    String description = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0).wholeOwnText();
+                    String description = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0).wholeText();
 
                     perk.setName(name);
                     perk.setEn_name(en_name);
+                    perk.setDescription(description.replaceAll("\n", " "));
 
                     perkList.add(perk);
                 }
-            }
-        } else {    // 위 형식이 아닌 경우
-            perkDivs = document.select("div.Xg8bWR6v div div.pukNZvf0 div.rQ4Wdu43 table tbody");
-
-            for(Element perkElement : perkDivs) {
-                Perk perk = Perk.builder()
-                        .role(killer.getRole())
-                        .playable_name(killer.getName())
-                        .playable_en_name(killer.getEn_name())
-                        .build();
-
-                String imgSrc = perkElement.select("tr td div.Fm-HYseR a span span img.pSe7sj7a").attr("src");
-
-                Elements nameElement = perkElement.select("tr td div.Fm-HYseR strong a.yfQL42-A span");
-                String name = nameElement.get(0).ownText();
-                String en_name = nameElement.get(1).ownText();
-
-                String description = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0).ownText();
-
-                perk.setImg(imgSrc);
-                perk.setName(name);
-                perk.setEn_name(en_name);
-                perk.setDescription(description);
-
-                perkList.add(perk);
 
             }
         }
+//
+//        // cssSelector로 고유 기술 영역 찾기
+//        Elements perkDivs = document.select("div.Xg8bWR6v div.Xg8bWR6v div.Xg8bWR6v div.pukNZvf0 div.rQ4Wdu43 table tbody tr");
+//        if(perkDivs.size() != 0 ) {
+//
+//            for (Element perkDiv : perkDivs) {
+//
+//                // 자식 요소가 3개여야 함 (각 캐릭터당 고유 기술 개수는 3개이므로)
+//                if (perkDiv.childrenSize() != 3) {
+//                    continue;
+//                }
+//
+//                for (Element perkElement : perkDiv.children()) {
+//
+//                    Perk perk = Perk.builder()
+//                            .role(killer.getRole())
+//                            .playable_name(killer.getName())
+//                            .playable_en_name(killer.getEn_name())
+//                            .build();
+//
+//                    Elements spans = perkElement.select("div.Fm-HYseR div div.Fm-HYseR div div span");
+//                    // 이미지 경로
+//                    String imgSrc = spans.get(0).child(0).child(1).attr("src");
+//
+//                    // 한글명
+//                    String name = spans.get(1).child(0).ownText();
+//
+//                    // 영문명
+//                    String en_name = spans.get(2).child(0).ownText();
+//
+//                    // 설명
+//                    String description = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0).wholeOwnText();
+//
+//                    perk.setName(name);
+//                    perk.setEn_name(en_name);
+//
+//                    perkList.add(perk);
+//                }
+//            }
+//        } else {    // 위 형식이 아닌 경우
+//            perkDivs = document.select("div.Xg8bWR6v div div.pukNZvf0 div.rQ4Wdu43 table tbody");
+//
+//            for(Element perkElement : perkDivs) {
+//                Perk perk = Perk.builder()
+//                        .role(killer.getRole())
+//                        .playable_name(killer.getName())
+//                        .playable_en_name(killer.getEn_name())
+//                        .build();
+//
+//                String imgSrc = perkElement.select("tr td div.Fm-HYseR a span span img.pSe7sj7a").attr("src");
+//
+//                Elements nameElement = perkElement.select("tr td div.Fm-HYseR strong a.yfQL42-A span");
+//                String name = nameElement.get(0).ownText();
+//                String en_name = nameElement.get(1).ownText();
+//
+//                String description = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0).ownText();
+//
+//                perk.setImg(imgSrc);
+//                perk.setName(name);
+//                perk.setEn_name(en_name);
+//                perk.setDescription(description);
+//
+//                perkList.add(perk);
+//
+//            }
+//        }
 
         return perkList;
     }
