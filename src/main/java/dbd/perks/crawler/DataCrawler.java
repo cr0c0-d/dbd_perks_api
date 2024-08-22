@@ -178,9 +178,25 @@ public class DataCrawler {
 
         List<Perk> perkList = new ArrayList<>();
 
+        // 문서의 본문 부분 div
+        Element contents = document.selectFirst("div.EoF2tNb4.QLFwR6Ut");
+
+        // '고유 기술' 제목 span 요소
         Element title = document.selectFirst("div.Imb4r44D h2.mWdzG-BT span:contains(고유 기술)");
 
-//        Element perkDiv = .parent.parent().parent().parent().nextElementSibling();;
+        // 찾은 제목 요소를 이용해 고유 기술 본문 영역을 찾는 과정
+        // 1. 제목 영역의 최상단 div를 찾기
+        Element titleDiv = title;
+        while(true) {
+            if(titleDiv.parent().equals(contents)) {
+                break;
+            } else {
+                titleDiv = titleDiv.parent();
+            }
+        }
+
+        Element perkDiv = contents.child(titleDiv.siblingIndex());
+        //Element perkDiv = title.parent().parent().parent().nextElementSibling();;
 
 //        for(Element title : titleElements) {
 //            if(title.ownText().equals("고유 기술")) {
@@ -209,7 +225,16 @@ public class DataCrawler {
                 String name = nameElement.get(0).ownText();
                 String en_name = nameElement.get(1).ownText();
 
-                String description = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0).wholeText();
+                Element descriptionSpan = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0);
+//                Elements brs = descriptionSpan.select("br");
+//                for(Element br : brs) {
+//                    if(br.nextElementSibling() != null && br.nextElementSibling().is("br")) {
+//                        br.nextElementSiblings().remove();
+//                        break;
+//                    }
+//                }
+
+                String description = descriptionSpan.html();
 
                 perk.setImg(imgSrc);
                 perk.setName(name);
@@ -250,7 +275,15 @@ public class DataCrawler {
                     String en_name = spans.select("span strong").get(1).ownText();
 
                     // 설명
-                    String description = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0).wholeText();
+                    Element descriptionSpan = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0);
+//                    Elements brs = descriptionSpan.select("br");
+//                    for(Element br : brs) {
+//                        if(br.nextElementSibling() != null && br.nextElementSibling().is("div")) {
+//                            br.nextElementSiblings().remove();
+//                            break;
+//                        }
+//                    }
+                    String description = descriptionSpan.html();
 
                     perk.setName(name);
                     perk.setEn_name(en_name);
