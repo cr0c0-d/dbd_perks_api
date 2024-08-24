@@ -23,28 +23,20 @@ public class Playable {
     @Column
     private String role;
 
-    @Column
-    private String en_name;
+    @Column(name = "en_name")
+    private String enName;
 
     @Column
     private String name;
 
-    @Column
-    private String name_tag;
-
-    @Column
-    private String nickname;
-
     @CreatedDate
-    @Column
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Builder
-    public Playable(String role, String en_name, String name, String name_tag, String nickname) {
+    public Playable(String role, String enName, String name) {
         this.role = role;
-        this.en_name = en_name;
+        this.enName = enName;
         this.name = name;
-        this.name_tag = name_tag;
-        this.nickname = nickname;
     }
 }

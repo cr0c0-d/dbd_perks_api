@@ -1,6 +1,7 @@
 package dbd.perks.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,27 +21,26 @@ public class Weapon {
     private Long id;
 
     @Column
-    private String tag;
-
-    @Column
     private String name;
 
-    @Column
-    private String skill;
+    @Column(name = "en_name")
+    private String enName;
 
     @Column
-    private String en_name;
+    private String img;
 
-    @Column
-    private String description;
-
-    @Column
-    private String lang;
-
-    @Column
-    private String icon;
+    @Column(name = "killer_id")
+    private Long killerId;
 
     @CreatedDate
-    @Column
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Builder
+    public Weapon(String name, String enName, String img, Long killerId) {
+        this.name = name;
+        this.enName = enName;
+        this.img = img;
+        this.killerId = killerId;
+    }
 }

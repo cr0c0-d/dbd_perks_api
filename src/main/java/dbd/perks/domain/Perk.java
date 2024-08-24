@@ -27,14 +27,14 @@ public class Perk {
     @Column
     private String name;
 
-    @Column
-    private String en_name;
+    @Column(name = "en_name")
+    private String enName;
 
-    @Column
-    private String playable_name;
+    @Column(name = "playable_name")
+    private String playableName;
 
-    @Column
-    private String playable_en_name;
+    @Column(name = "playable_en_name")
+    private String playableEnName;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -46,16 +46,16 @@ public class Perk {
     private String img;
 
     @CreatedDate
-    @Column
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Builder
-    public Perk(String role, String name, String en_name, String playable_name, String playable_en_name, String description, String img) {
+    public Perk(String role, String name, String enName, String playableName, String playableEnName, String description, String img) {
         this.role = role;
         this.name = name;
-        this.en_name = en_name;
-        this.playable_name = playable_name;
-        this.playable_en_name = playable_en_name;
+        this.enName = enName;
+        this.playableName = playableName;
+        this.playableEnName = playableEnName;
         this.description = description;
         this.img = img;
     }

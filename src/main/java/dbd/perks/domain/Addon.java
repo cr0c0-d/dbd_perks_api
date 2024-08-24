@@ -20,13 +20,13 @@ public class Addon {
     private Long id;
 
     @Column
-    private String en_name;
-
-    @Column
     private String name;
 
+    @Column(name = "en_name")
+    private String enName;
+
     @Column
-    private String item;
+    private String type;
 
     @Column
     private String level;
@@ -35,12 +35,9 @@ public class Addon {
     private String description;
 
     @Column
-    private String lang;
-
-    @Column
-    private String icon;
+    private String img;
 
     @CreatedDate
-    @Column
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }
