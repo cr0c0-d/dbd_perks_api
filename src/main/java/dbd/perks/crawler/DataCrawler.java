@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -188,22 +189,15 @@ public class DataCrawler {
         // 1. 제목 영역의 최상단 div를 찾기
         Element titleDiv = title;
         while(true) {
-            if(titleDiv.parent().equals(contents)) {
+            if(titleDiv != null && titleDiv.parent() != null && titleDiv.parent().equals(contents)) {
                 break;
             } else {
                 titleDiv = titleDiv.parent();
             }
         }
 
+        // 2. 본문 영역에서 '고유 기술' 제목 영역 다음 인덱스 요소가 '고유 기술' 본문 영역
         Element perkDiv = contents.child(titleDiv.siblingIndex());
-        //Element perkDiv = title.parent().parent().parent().nextElementSibling();;
-
-//        for(Element title : titleElements) {
-//            if(title.ownText().equals("고유 기술")) {
-//                perkDiv = title.parent().parent().parent().nextElementSibling();
-//                break;
-//            }
-//        }
 
         Elements perkTables = perkDiv.select("table tbody");
 
@@ -226,13 +220,6 @@ public class DataCrawler {
                 String en_name = nameElement.get(1).ownText();
 
                 Element descriptionSpan = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0);
-//                Elements brs = descriptionSpan.select("br");
-//                for(Element br : brs) {
-//                    if(br.nextElementSibling() != null && br.nextElementSibling().is("br")) {
-//                        br.nextElementSiblings().remove();
-//                        break;
-//                    }
-//                }
 
                 String description = descriptionSpan.html();
 
@@ -276,15 +263,10 @@ public class DataCrawler {
 
                     // 설명
                     Element descriptionSpan = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0);
-//                    Elements brs = descriptionSpan.select("br");
-//                    for(Element br : brs) {
-//                        if(br.nextElementSibling() != null && br.nextElementSibling().is("div")) {
-//                            br.nextElementSiblings().remove();
-//                            break;
-//                        }
-//                    }
+
                     String description = descriptionSpan.html();
 
+                    perk.setImg(imgSrc);
                     perk.setName(name);
                     perk.setEn_name(en_name);
                     perk.setDescription(description.replaceAll("\n", " "));
@@ -294,72 +276,6 @@ public class DataCrawler {
 
             }
         }
-//
-//        // cssSelector로 고유 기술 영역 찾기
-//        Elements perkDivs = document.select("div.Xg8bWR6v div.Xg8bWR6v div.Xg8bWR6v div.pukNZvf0 div.rQ4Wdu43 table tbody tr");
-//        if(perkDivs.size() != 0 ) {
-//
-//            for (Element perkDiv : perkDivs) {
-//
-//                // 자식 요소가 3개여야 함 (각 캐릭터당 고유 기술 개수는 3개이므로)
-//                if (perkDiv.childrenSize() != 3) {
-//                    continue;
-//                }
-//
-//                for (Element perkElement : perkDiv.children()) {
-//
-//                    Perk perk = Perk.builder()
-//                            .role(killer.getRole())
-//                            .playable_name(killer.getName())
-//                            .playable_en_name(killer.getEn_name())
-//                            .build();
-//
-//                    Elements spans = perkElement.select("div.Fm-HYseR div div.Fm-HYseR div div span");
-//                    // 이미지 경로
-//                    String imgSrc = spans.get(0).child(0).child(1).attr("src");
-//
-//                    // 한글명
-//                    String name = spans.get(1).child(0).ownText();
-//
-//                    // 영문명
-//                    String en_name = spans.get(2).child(0).ownText();
-//
-//                    // 설명
-//                    String description = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0).wholeOwnText();
-//
-//                    perk.setName(name);
-//                    perk.setEn_name(en_name);
-//
-//                    perkList.add(perk);
-//                }
-//            }
-//        } else {    // 위 형식이 아닌 경우
-//            perkDivs = document.select("div.Xg8bWR6v div div.pukNZvf0 div.rQ4Wdu43 table tbody");
-//
-//            for(Element perkElement : perkDivs) {
-//                Perk perk = Perk.builder()
-//                        .role(killer.getRole())
-//                        .playable_name(killer.getName())
-//                        .playable_en_name(killer.getEn_name())
-//                        .build();
-//
-//                String imgSrc = perkElement.select("tr td div.Fm-HYseR a span span img.pSe7sj7a").attr("src");
-//
-//                Elements nameElement = perkElement.select("tr td div.Fm-HYseR strong a.yfQL42-A span");
-//                String name = nameElement.get(0).ownText();
-//                String en_name = nameElement.get(1).ownText();
-//
-//                String description = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0).ownText();
-//
-//                perk.setImg(imgSrc);
-//                perk.setName(name);
-//                perk.setEn_name(en_name);
-//                perk.setDescription(description);
-//
-//                perkList.add(perk);
-//
-//            }
-//        }
 
         return perkList;
     }
