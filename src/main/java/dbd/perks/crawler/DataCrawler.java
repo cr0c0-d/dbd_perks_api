@@ -182,12 +182,12 @@ public class DataCrawler {
         // 문서의 본문 부분 div
         Element contents = document.selectFirst("div.EoF2tNb4.QLFwR6Ut");
 
+        // '고유 기술' 제목 요소를 이용해 '고유 기술' 본문 영역을 찾는 과정
         // '고유 기술' 제목 span 요소
-        Element title = document.selectFirst("div.Imb4r44D h2.mWdzG-BT span:contains(고유 기술)");
+        Element titleDiv = document.selectFirst("div.Imb4r44D h2.mWdzG-BT span:contains(고유 기술)");
 
-        // 찾은 제목 요소를 이용해 고유 기술 본문 영역을 찾는 과정
         // 1. 제목 영역의 최상단 div를 찾기
-        Element titleDiv = title;
+        // 문서 본문 영역(contents)이 부모 요소가 될 때까지 거슬러 올라감
         while(true) {
             if(titleDiv != null && titleDiv.parent() != null && titleDiv.parent().equals(contents)) {
                 break;
@@ -196,7 +196,7 @@ public class DataCrawler {
             }
         }
 
-        // 2. 본문 영역에서 '고유 기술' 제목 영역 다음 인덱스 요소가 '고유 기술' 본문 영역
+        // 2. 문서 본문 영역(contents)에서 '고유 기술' 제목 영역 다음 인덱스 요소가 '고유 기술' 본문 영역
         Element perkDiv = contents.child(titleDiv.siblingIndex());
 
         Elements perkTables = perkDiv.select("table tbody");
@@ -213,8 +213,7 @@ public class DataCrawler {
 
                 String imgSrc = perkElement.select("noscript img.pSe7sj7a").attr("src");
 
-                Elements nameElement = perkElement.select("tr td div.Fm-HYseR strong");
-                nameElement = nameElement.select("span");
+                Elements nameElement = perkElement.select("tr:nth-of-type(2) td div.Fm-HYseR strong span");
 
                 String name = nameElement.get(0).ownText();
                 String en_name = nameElement.get(1).ownText();
