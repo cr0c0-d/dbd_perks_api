@@ -13,7 +13,7 @@ public class TestController {
 
     @GetMapping("/api/crawlerTest")
     public void test() {
-        dataCrawler.getKillerDocUrlList();
+        dataCrawler.runKillerCrawler();
     }
 
 }
