@@ -1,10 +1,11 @@
 package dbd.perks.crawler;
 
-import dbd.perks.domain.Item;
 import dbd.perks.domain.Perk;
 import dbd.perks.domain.Playable;
+import dbd.perks.domain.Weapon;
 import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
+import dbd.perks.repository.WeaponRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,6 +23,9 @@ public class KillerCrawler {
 
     private final PlayableRepository playableRepository;
     private final PerkRepository perkRepository;
+    private final WeaponRepository weaponRepository;
+
+    private final CrawlerUtil crawlerUtil;
 
     /**
      * 나무위키 도메인
@@ -38,7 +42,7 @@ public class KillerCrawler {
      */
     private List<String> killerDocsLinkUrlList = new ArrayList<>();
 
-    private List<Playable> killerList = new ArrayList<>();
+    // private List<Playable> killerList = new ArrayList<>();
 
 
     /**
@@ -94,6 +98,13 @@ public class KillerCrawler {
             for(String url : killerDocsLinkUrlList) {
                 Document document = Jsoup.connect(namuWikiDomain + url).get();
 
+                // 미출시 이미지
+                Elements imgUpcoming = document.select("img[alt='DBD DLC Upcoming']");
+                if(!imgUpcoming.isEmpty()) {
+                    // 미출시 캐릭터의 경우 스킵
+                    continue;
+                }
+                
                 Elements tables = document.select(".AVEibs0x");
 
                 Element profileTable = null;
@@ -140,23 +151,29 @@ public class KillerCrawler {
                 Elements nameSpans = profileTable.select("tbody tr td div.Fm-HYseR div span strong span.jrW0Zn5O");
                 for(Element nameSpan : nameSpans) {
                     if(nameSpan.childrenSize() > 1) {
-                        player.setEn_name(nameSpan.child(0).ownText());
+                        player.setEnName(nameSpan.child(0).ownText());
                         player.setName(nameSpan.child(nameSpan.childrenSize() - 1).ownText());
                     }
                 }
 
-                // 한글명과 영문명 둘 다 찾은 경우 리스트에 추가
-                if(player.getName() != null && player.getEn_name() != null) {
-                    killerList.add(player);
+                // 한글명과 영문명 둘 다 찾은 경우
+
+                if(player.getName() != null && player.getEnName() != null) {
+
+                    // 리스트에 추가
+                    // killerList.add(player);
+                    
+                    // DB에 저장
+                    player = playableRepository.save(player);
                 }
 
                 List<Perk> perks = getKillerPerks(document, player);
-
+                Weapon weapon = getKillerWeapon(document, player);
                 perkRepository.saveAll(perks);
+                weaponRepository.save(weapon);
 
             }
 
-            playableRepository.saveAll(killerList);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -175,25 +192,7 @@ public class KillerCrawler {
 
         List<Perk> perkList = new ArrayList<>();
 
-        // 문서의 본문 부분 div
-        Element contents = document.selectFirst("div.EoF2tNb4.QLFwR6Ut");
-
-        // '고유 기술' 제목 요소를 이용해 '고유 기술' 본문 영역을 찾는 과정
-        // '고유 기술' 제목 span 요소
-        Element titleDiv = document.selectFirst("div.Imb4r44D h2.mWdzG-BT span:contains(고유 기술)");
-
-        // 1. 제목 영역의 최상단 div를 찾기
-        // 문서 본문 영역(contents)이 부모 요소가 될 때까지 거슬러 올라감
-        while(true) {
-            if(titleDiv != null && titleDiv.parent() != null && titleDiv.parent().equals(contents)) {
-                break;
-            } else {
-                titleDiv = titleDiv.parent();
-            }
-        }
-
-        // 2. 문서 본문 영역(contents)에서 '고유 기술' 제목 영역 다음 인덱스 요소가 '고유 기술' 본문 영역
-        Element perkDiv = contents.child(titleDiv.siblingIndex());
+        Element perkDiv = crawlerUtil.getContentsElement(document, "고유 기술");
 
         Elements perkTables = perkDiv.select("table tbody");
 
@@ -203,8 +202,8 @@ public class KillerCrawler {
             for(Element perkElement : perkTables) {
                 Perk perk = Perk.builder()
                         .role(killer.getRole())
-                        .playable_name(killer.getName())
-                        .playable_en_name(killer.getEn_name())
+                        .playableName(killer.getName())
+                        .playableEnName(killer.getEnName())
                         .build();
 
                 String imgSrc = perkElement.select("noscript img.pSe7sj7a").attr("src");
@@ -220,7 +219,7 @@ public class KillerCrawler {
 
                 perk.setImg(namuWikiDomain+imgSrc);
                 perk.setName(name);
-                perk.setEn_name(en_name);
+                perk.setEnName(en_name);
                 perk.setDescription(description.replaceAll("\n", " "));
 
                 perkList.add(perk);
@@ -242,8 +241,8 @@ public class KillerCrawler {
 
                     Perk perk = Perk.builder()
                             .role(killer.getRole())
-                            .playable_name(killer.getName())
-                            .playable_en_name(killer.getEn_name())
+                            .playableName(killer.getName())
+                            .playableEnName(killer.getEnName())
                             .build();
 
                     Elements spans = perkElement.select("div.Fm-HYseR div div.Fm-HYseR div div span");
@@ -263,7 +262,7 @@ public class KillerCrawler {
 
                     perk.setImg(namuWikiDomain+imgSrc);
                     perk.setName(name);
-                    perk.setEn_name(en_name);
+                    perk.setEnName(en_name);
                     perk.setDescription(description.replaceAll("\n", " "));
 
                     perkList.add(perk);
@@ -273,5 +272,34 @@ public class KillerCrawler {
         }
 
         return perkList;
+    }
+
+
+    /**
+     *  살인마 개별 문서 Document 객체와 살인마 Playable 객체를 받아, 해당 살인마의 특수능력을 찾아 Weapon 객체로 반환하는 함수
+     * @param document 살인마 개별 문서
+     * @param killer 살인마 객체
+     * @return 특수능력 Weapon 객체
+     */
+    public Weapon getKillerWeapon(Document document, Playable killer) {
+
+        Weapon weapon = Weapon.builder()
+                .killerId(killer.getId())
+                .build();
+
+        Element wpDiv = crawlerUtil.getContentsElement(document, "무기 & 능력");
+
+        Elements wpTableTds = wpDiv.select("table tbody").get(1).select("td");
+
+        String img = wpTableTds.get(0).select("noscript img").attr("src");
+        Element nameElement = wpTableTds.get(1).selectFirst("div span");
+        String name = nameElement.selectFirst("strong").wholeText();
+        String enName = nameElement.select("span").get(nameElement.select("span").size()-1).wholeText();
+
+        weapon.setImg(img);
+        weapon.setName(name);
+        weapon.setEnName(enName);
+
+        return weapon;
     }
 }
