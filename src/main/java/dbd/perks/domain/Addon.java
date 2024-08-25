@@ -1,8 +1,7 @@
 package dbd.perks.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,6 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Addon {
 
     @Id
@@ -32,6 +33,9 @@ public class Addon {
     private String level;
 
     @Column
+    private Long killerId;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -40,4 +44,15 @@ public class Addon {
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Builder
+    public Addon(String name, String enName, String type, String level, Long killerId, String description, String img) {
+        this.name = name;
+        this.enName = enName;
+        this.type = type;
+        this.level = level;
+        this.killerId = killerId;
+        this.description = description;
+        this.img = img;
+    }
 }
