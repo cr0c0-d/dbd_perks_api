@@ -1,8 +1,10 @@
 package dbd.perks.crawler;
 
+import dbd.perks.domain.Addon;
 import dbd.perks.domain.Perk;
 import dbd.perks.domain.Playable;
 import dbd.perks.domain.Weapon;
+import dbd.perks.repository.AddonRepository;
 import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
 import dbd.perks.repository.WeaponRepository;
@@ -10,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,7 @@ public class KillerCrawler {
     private final PlayableRepository playableRepository;
     private final PerkRepository perkRepository;
     private final WeaponRepository weaponRepository;
+    private final AddonRepository addonRepository;
 
     private final CrawlerUtil crawlerUtil;
 
@@ -169,8 +174,10 @@ public class KillerCrawler {
 
                 List<Perk> perks = getKillerPerks(document, player);
                 Weapon weapon = getKillerWeapon(document, player);
+                List<Addon> addons = getKillerAddons(document, player);
                 perkRepository.saveAll(perks);
                 weaponRepository.save(weapon);
+                addonRepository.saveAll(addons);
 
             }
 
@@ -296,10 +303,74 @@ public class KillerCrawler {
         String name = nameElement.selectFirst("strong").wholeText();
         String enName = nameElement.select("span").get(nameElement.select("span").size()-1).wholeText();
 
-        weapon.setImg(img);
+        weapon.setImg(namuWikiDomain + img);
         weapon.setName(name);
         weapon.setEnName(enName);
 
         return weapon;
+    }
+
+    /**
+     *  살인마 개별 문서 Document 객체와 살인마 Playable 객체를 받아, 해당 살인마의 애드온을 찾아 List 형태로 반환하는 함수
+     * @param document 살인마 개별 문서
+     * @param killer 살인마 객체
+     * @return Addon(애드온) 리스트
+     */
+    public List<Addon> getKillerAddons(Document document, Playable killer) {
+        List<Addon> addonList = new ArrayList<>();
+
+        Element addonDiv = crawlerUtil.getContentsElement(document, "애드온");
+
+        Elements addonLines = addonDiv.select("table tbody tr:nth-child(n+2)");
+
+        for(Element addonLine : addonLines) {
+            Elements tds = addonLine.select("td");
+
+            Addon addon = Addon.builder()
+                    .killerId(killer.getId())
+                    .build();
+
+            for(int i = 0; i < tds.size(); i++) {
+                Element td = tds.get(i);
+                switch(i) {
+                    case 0 :
+                        String img = td.select("noscript img").attr("src");
+                        addon.setImg(img);
+                        break;
+                    case 1 :
+                        Elements aTags = td.select("a");
+                        if(!aTags.isEmpty()) {
+                            for(Element aTag : aTags) {
+                                aTag.remove();
+                            }
+                        }
+                        Element nameElement = td.select("strong").get(0);
+                        List<Node> childNodes = nameElement.childNodes();
+                        for(Node node : childNodes) {
+                            if(node.siblingIndex() == 0) {
+                                String name = ((TextNode) node).text();
+                                addon.setName(name);
+                            } else if (node.siblingIndex() == 2) {
+                                String enName = ((TextNode) node).text();
+                                addon.setEnName(enName);
+                            }
+                        }
+
+                        break;
+                    case 3 :
+                        String level = td.select("span").get(0).wholeText();
+                        addon.setLevel(level);
+                        break;
+                    case 4 :
+                        addon.setDescription(td.html());
+                        break;
+                    default :
+                        break;
+                }
+            }
+            addonList.add(addon);
+        }
+
+        return addonList;
     }
 }
