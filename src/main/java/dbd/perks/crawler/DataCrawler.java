@@ -3,6 +3,7 @@ package dbd.perks.crawler;
 import dbd.perks.domain.Playable;
 import dbd.perks.domain.Item;
 import dbd.perks.domain.Perk;
+import dbd.perks.repository.AddonRepository;
 import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
 import dbd.perks.repository.WeaponRepository;
@@ -25,10 +26,11 @@ public class DataCrawler {
     private final PlayableRepository playableRepository;
     private final PerkRepository perkRepository;
     private final WeaponRepository weaponRepository;
+    private final AddonRepository addonRepository;
     private final CrawlerUtil crawlerUtil;
 
     public void runKillerCrawler() {
-        KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, crawlerUtil);
+        KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil);
 
         killerCrawler.runKillerCrawler();
 
