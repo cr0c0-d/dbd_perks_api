@@ -335,7 +335,7 @@ public class KillerCrawler {
                 switch(i) {
                     case 0 :
                         String img = td.select("noscript img").attr("src");
-                        addon.setImg(img);
+                        addon.setImg(namuWikiDomain + img);
                         break;
                     case 1 :
                         Elements aTags = td.select("a");
