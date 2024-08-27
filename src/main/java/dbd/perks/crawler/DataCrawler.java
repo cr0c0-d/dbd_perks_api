@@ -35,4 +35,9 @@ public class DataCrawler {
         killerCrawler.runKillerCrawler();
 
     }
+
+    public void runSurvivorCrawler() {
+        SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, crawlerUtil);
+        survivorCrawler.runSurvivorCrawler();
+    }
 }
