@@ -2,10 +2,8 @@ package dbd.perks.crawler;
 
 import dbd.perks.domain.Perk;
 import dbd.perks.domain.Playable;
-import dbd.perks.repository.AddonRepository;
 import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
-import dbd.perks.repository.WeaponRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -69,34 +67,97 @@ public class SurvivorCrawler {
 
     public void getSurvivorData(Document document) {
 
-        Elements tables = document.select("table.AVEibs0x");
+        // 생존자 한글명 리스트
+        List<String> survNames = new ArrayList<>();
 
+        // 생존자 Playable 객체 리스트
         List<Playable> playableList = new ArrayList<>();
 
-        Playable player = null;
-        List<Perk> perkList = new ArrayList<>();
+        // 생존자 목차 정보
+        Elements survTitles = document.select("div.aA8jPaIQ span.JmXQVD37");
 
-        for(Element table : tables) {
-            Elements survInfoEl = table.select("div.Fm-HYseR div");
+        // 생존자 한글명 수집
+        for(Element survTitle : survTitles) {
+            Element num = survTitle.selectFirst("a");
 
-            if(!survInfoEl.isEmpty() && table.text().contains("신음 소리")) {
-                // 생존자 기본 정보 table일 경우
-                player = playableRepository.save(getSurvivorName(table));
-
-            } else if(table.text().contains("기술")){
-                // 생존자 기술 정보 table일 경우
-                perkList.add(getSurvivorPerks(table, player));
-
-                // 기술정보 3개 수집 후 현재 player 및 Perk 리스트 리셋
-                if(perkList.size() == 3) {
-                    player = null;
-
-                    perkRepository.saveAll(perkList);
-                    perkList = new ArrayList<>();
-                }
-
+            if(!num.ownText().contains(".")) {
+                // 생존자 한글명인 경우
+                num.remove();
+                // 생존자 이름 저장
+                survNames.add(survTitle.wholeText().replace(".", "").trim());
             }
         }
+
+
+        for(String survName : survNames) {
+            Playable survivor = Playable.builder()
+                    .name(survName)
+                    .role("survivor")
+                    .build();
+
+            Element survDiv = crawlerUtil.getContentsElement(document, survName);
+
+            if(survDiv == null) {
+                continue;
+            }
+            Element survTable = survDiv.selectFirst("table.AVEibs0x tbody tr");
+
+            Element survNameSpan = survTable.selectFirst("strong span.jrW0Zn5O");
+            survivor.setEnName(survNameSpan.child(0).ownText());
+
+            playableList.add(survivor);
+        }
+
+        playableList = playableRepository.saveAll(playableList);
+
+
+
+        Elements perkDivs = crawlerUtil.getContentsElements(document, "전승 기술");
+
+        for(int i = 0; i < perkDivs.size(); i++) {
+            Element perkDiv = perkDivs.get(i);
+            Playable survivor = playableList.get(i);
+            List<Perk> perkList = new ArrayList<>();
+
+            Elements tables = perkDiv.select("table");
+
+            for(Element table : tables) {
+                perkList.add(getSurvivorPerks(table, survivor));
+            }
+
+            perkRepository.saveAll(perkList);
+        }
+
+
+
+//        Elements tables = document.select("table.AVEibs0x");
+
+
+
+//        Playable player = null;
+//        List<Perk> perkList = new ArrayList<>();
+//
+//        for(Element table : tables) {
+//            Elements survInfoEl = table.select("div.Fm-HYseR div");
+//
+//            if(!survInfoEl.isEmpty() && table.text().contains("신음 소리")) {
+//                // 생존자 기본 정보 table일 경우
+//                player = playableRepository.save(getSurvivorName(table));
+//
+//            } else if(table.text().contains("기술")){
+//                // 생존자 기술 정보 table일 경우
+//                perkList.add(getSurvivorPerks(table, player));
+//
+//                // 기술정보 3개 수집 후 현재 player 및 Perk 리스트 리셋
+//                if(perkList.size() == 3) {
+//                    player = null;
+//
+//                    perkRepository.saveAll(perkList);
+//                    perkList = new ArrayList<>();
+//                }
+//
+//            }
+//        }
     }
 
     public Playable getSurvivorName(Element table) {
