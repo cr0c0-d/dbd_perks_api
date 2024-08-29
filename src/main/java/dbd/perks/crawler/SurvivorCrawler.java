@@ -74,7 +74,7 @@ public class SurvivorCrawler {
         List<Playable> playableList = new ArrayList<>();
 
         // 생존자 목차 정보
-        Elements survTitles = document.select("div.aA8jPaIQ span.JmXQVD37");
+        Elements survTitles = document.select("div div span");
 
         // 생존자 한글명 수집
         for(Element survTitle : survTitles) {
@@ -95,38 +95,49 @@ public class SurvivorCrawler {
                     .role("survivor")
                     .build();
 
+            List<Perk> perkList = new ArrayList<>();
+
             Element survDiv = crawlerUtil.getContentsElement(document, survName);
 
             if(survDiv == null) {
                 continue;
             }
-            Element survTable = survDiv.selectFirst("table.AVEibs0x tbody tr");
 
-            Element survNameSpan = survTable.selectFirst("strong span.jrW0Zn5O");
+            Element survTable = survDiv.selectFirst("table tbody tr");
+
+            Element survNameSpan = survTable.selectFirst("strong span");
             survivor.setEnName(survNameSpan.child(0).ownText());
 
-            playableList.add(survivor);
-        }
+            playableList.add(playableRepository.save(survivor));
 
-        playableList = playableRepository.saveAll(playableList);
+            Element perkDiv = crawlerUtil.getNextElement(document, crawlerUtil.getNextElement(document, survDiv));
 
+            Elements perkTables = perkDiv.select("table");
 
-
-        Elements perkDivs = crawlerUtil.getContentsElements(document, "전승 기술");
-
-        for(int i = 0; i < perkDivs.size(); i++) {
-            Element perkDiv = perkDivs.get(i);
-            Playable survivor = playableList.get(i);
-            List<Perk> perkList = new ArrayList<>();
-
-            Elements tables = perkDiv.select("table");
-
-            for(Element table : tables) {
+            for(Element table : perkTables) {
                 perkList.add(getSurvivorPerks(table, survivor));
             }
 
             perkRepository.saveAll(perkList);
         }
+
+
+//
+//        Elements perkDivs = crawlerUtil.getContentsElements(document, "전승 기술");
+//
+//        for(int i = 0; i < perkDivs.size(); i++) {
+//            Element perkDiv = perkDivs.get(i);
+//            Playable survivor = playableList.get(i);
+//            List<Perk> perkList = new ArrayList<>();
+//
+//            Elements tables = perkDiv.select("table");
+//
+//            for(Element table : tables) {
+//                perkList.add(getSurvivorPerks(table, survivor));
+//            }
+//
+//            perkRepository.saveAll(perkList);
+//        }
 
 
 
@@ -165,7 +176,7 @@ public class SurvivorCrawler {
                 .role("survivor")
                 .build();
 
-        Elements nameSpans = table.select("tbody tr td div.Fm-HYseR div span strong span.jrW0Zn5O");
+        Elements nameSpans = table.select("tbody tr td div div span strong span");
         for(Element nameSpan : nameSpans) {
             if(nameSpan.childrenSize() > 1) {
                 playable.setEnName(nameSpan.child(0).ownText());
@@ -183,14 +194,14 @@ public class SurvivorCrawler {
                 .playableEnName(player.getEnName())
                 .build();
 
-        String imgSrc = table.select("noscript img.pSe7sj7a").attr("src");
+        String imgSrc = table.select("noscript img").attr("src");
 
-        Elements nameElement = table.select("tr:nth-of-type(2) td div.Fm-HYseR strong span");
+        Elements nameElement = table.select("tr:nth-of-type(2) td div strong span");
 
         String name = nameElement.get(0).ownText();
         String en_name = nameElement.get(1).ownText();
 
-        Element descriptionSpan = table.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0);
+        Element descriptionSpan = table.select("tr td[rowspan='2'] div span").get(0);
 
         String description = descriptionSpan.html();
 

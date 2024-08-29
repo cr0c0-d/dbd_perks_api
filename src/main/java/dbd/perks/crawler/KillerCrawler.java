@@ -110,7 +110,7 @@ public class KillerCrawler {
                     continue;
                 }
                 
-                Elements tables = document.select(".AVEibs0x");
+                Elements tables = document.select("table");
 
                 Element profileTable = null;
 
@@ -153,7 +153,7 @@ public class KillerCrawler {
                  */
 
                 /* 방법 2 : cssSelector로 찾기*/
-                Elements nameSpans = profileTable.select("tbody tr td div.Fm-HYseR div span strong span.jrW0Zn5O");
+                Elements nameSpans = profileTable.select("tbody tr td div div span strong span");
                 for(Element nameSpan : nameSpans) {
                     if(nameSpan.childrenSize() > 1) {
                         player.setEnName(nameSpan.child(0).ownText());
@@ -213,14 +213,14 @@ public class KillerCrawler {
                         .playableEnName(killer.getEnName())
                         .build();
 
-                String imgSrc = perkElement.select("noscript img.pSe7sj7a").attr("src");
+                String imgSrc = perkElement.select("noscript img").attr("src");
 
-                Elements nameElement = perkElement.select("tr:nth-of-type(2) td div.Fm-HYseR strong span");
+                Elements nameElement = perkElement.select("tr:nth-of-type(2) td div strong span");
 
                 String name = nameElement.get(0).ownText();
                 String en_name = nameElement.get(1).ownText();
 
-                Element descriptionSpan = perkElement.select("tr td[rowspan='2'] div.Fm-HYseR span").get(0);
+                Element descriptionSpan = perkElement.select("tr td[rowspan='2'] div span").get(0);
 
                 String description = descriptionSpan.html();
 
@@ -252,7 +252,7 @@ public class KillerCrawler {
                             .playableEnName(killer.getEnName())
                             .build();
 
-                    Elements spans = perkElement.select("div.Fm-HYseR div div.Fm-HYseR div div span");
+                    Elements spans = perkElement.select("div div div div div span");
                     // 이미지 경로
                     String imgSrc = spans.select("noscript img").attr("src");
 
@@ -263,7 +263,7 @@ public class KillerCrawler {
                     String en_name = spans.select("span strong").get(1).ownText();
 
                     // 설명
-                    Element descriptionSpan = perkElement.select("td div.Fm-HYseR div div.Fm-HYseR div div div span span.sek7pjNI dl.xuwY-BDU dd div span:nth-child(1)").get(0);
+                    Element descriptionSpan = perkElement.select("td div div div div div div span span dl dd div span:nth-child(1)").get(0);
 
                     String description = descriptionSpan.html();
 
