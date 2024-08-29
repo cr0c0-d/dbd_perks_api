@@ -27,6 +27,9 @@ dependencies {
     // Jsoup
     implementation 'org.jsoup:jsoup:1.17.2'
 
+    // Selenium
+    implementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
+
     // mysql connector
     runtimeOnly 'com.mysql:mysql-connector-j'
 }
