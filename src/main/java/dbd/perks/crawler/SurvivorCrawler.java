@@ -73,19 +73,15 @@ public class SurvivorCrawler {
         // 생존자 Playable 객체 리스트
         List<Playable> playableList = new ArrayList<>();
 
+        // 1. 생존자 목차 정보에서 한글명 수집
         // 생존자 목차 정보
-        Elements survTitles = document.select("div div span");
+        // href가 #s-? 형식인 a 태그 선택
+        List<Element> survTitleATags = document.select("div div span a").stream().filter(survTitle -> survTitle.attr("href").startsWith("#s-") && !survTitle.attr("href").contains(".")).toList();
 
         // 생존자 한글명 수집
-        for(Element survTitle : survTitles) {
-            Element num = survTitle.selectFirst("a");
-
-            if(!num.ownText().contains(".")) {
-                // 생존자 한글명인 경우
-                num.remove();
-                // 생존자 이름 저장
-                survNames.add(survTitle.wholeText().replace(".", "").trim());
-            }
+        for(Element survTitleATag : survTitleATags) {
+            // 생존자 이름 저장
+            survNames.add(survTitleATag.parent().ownText().replace(".", "").trim());
         }
 
 
