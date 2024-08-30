@@ -27,7 +27,9 @@ public class DataCrawler {
     private final PerkRepository perkRepository;
     private final WeaponRepository weaponRepository;
     private final AddonRepository addonRepository;
+
     private final CrawlerUtil crawlerUtil;
+    private final ScrollCrawler scrollCrawler;
 
     public void runKillerCrawler() {
         KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil);
@@ -37,7 +39,7 @@ public class DataCrawler {
     }
 
     public void runSurvivorCrawler() {
-        SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, crawlerUtil);
+        SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, crawlerUtil, scrollCrawler);
         survivorCrawler.runSurvivorCrawler();
     }
 }

@@ -8,13 +8,15 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ScrollCrawler {
-    public void testCrawler() {
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver.exe");
+    public Document getDocumentByScrollCrawler(String url) {
+        System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
         WebDriver driver = new ChromeDriver();
 
-        driver.get("https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EC%83%9D%EC%A1%B4%EC%9E%90/%EC%98%A4%EB%A6%AC%EC%A7%80%EB%84%90%20%EC%BA%90%EB%A6%AD%ED%84%B0");
+        driver.get(url);
 
         // 스크롤 내리기
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -35,10 +37,14 @@ public class ScrollCrawler {
 
         // JSoup으로 HTML 파싱
         Document doc = Jsoup.parse(pageSource);
-        Element contents = doc.selectFirst("hr").parent(); // 선택자에 맞는 첫 번째 요소 선택
-
-        System.out.println(contents);
 
         driver.quit();
+
+        return doc;
+//        Element contents = doc.selectFirst("hr").parent(); // 선택자에 맞는 첫 번째 요소 선택
+//
+//        System.out.println(contents);
+//
+//        driver.quit();
     }
 }
