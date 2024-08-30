@@ -42,7 +42,7 @@ public class SurvivorCrawler {
     }
 
     /**
-     * 생존자 문서에 접근해
+     * 생존자 문서를 불러와 각 데이터를 수집하는 함수
      */
     public void getSurvivorDocument() {
         // Jsoup 연결 - 생존자 오리지널
@@ -71,8 +71,9 @@ public class SurvivorCrawler {
 
         // 생존자 한글명 수집
         for(Element survTitleATag : survTitleATags) {
+            String wholeText = survTitleATag.parent().wholeText();
             // 생존자 이름 저장
-            survNames.add(survTitleATag.parent().ownText().replace(".", "").trim());
+            survNames.add(wholeText.split("\\.", 2)[1].trim());
         }
 
 
@@ -82,7 +83,7 @@ public class SurvivorCrawler {
                     .role("survivor")
                     .build();
 
-            List<Perk> perkList = new ArrayList<>();
+            List<Perk> perkList = null;
 
             Element survDiv = crawlerUtil.getContentsElement(document, survName);
 
@@ -135,8 +136,7 @@ public class SurvivorCrawler {
             for(Element table : tables) {
                 Perk perk = Perk.builder()
                         .role(player.getRole())
-                        .playableName(player.getName())
-                        .playableEnName(player.getEnName())
+                        .playableId(player.getId())
                         .build();
 
                 String imgSrc = table.select("noscript img").attr("src");
@@ -166,8 +166,7 @@ public class SurvivorCrawler {
 
                     Perk perk = Perk.builder()
                             .role(player.getRole())
-                            .playableName(player.getName())
-                            .playableEnName(player.getEnName())
+                            .playableId(player.getId())
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
