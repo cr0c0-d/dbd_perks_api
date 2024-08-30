@@ -5,13 +5,11 @@ import dbd.perks.domain.Playable;
 import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +21,7 @@ public class SurvivorCrawler {
     private final PerkRepository perkRepository;
 
     private final CrawlerUtil crawlerUtil;
+    private final ScrollCrawler scrollCrawler;
 
     /**
      * 나무위키 도메인
@@ -46,23 +45,15 @@ public class SurvivorCrawler {
      * 생존자 문서에 접근해
      */
     public void getSurvivorDocument() {
-        try {
+        // Jsoup 연결 - 생존자 오리지널
+        Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
 
-            // Jsoup 연결 - 생존자 오리지널
-            Document documentOri = Jsoup.connect(survivorDocUrlOri).get();
+        getSurvivorData(documentOri);
 
-            getSurvivorData(documentOri);
+        // Jsoup 연결 - 생존자 라이센스
+        Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
 
-            // Jsoup 연결 - 생존자 라이센스
-            Document documentLic = Jsoup.connect(survivorDocUrlLic).get();
-
-            getSurvivorData(documentLic);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        getSurvivorData(documentLic);
     }
 
     public void getSurvivorData(Document document) {
@@ -106,65 +97,17 @@ public class SurvivorCrawler {
 
             playableList.add(playableRepository.save(survivor));
 
-            Element perkDiv = crawlerUtil.getNextElement(document, crawlerUtil.getNextElement(document, survDiv));
+            Element perkDiv = crawlerUtil.getNextElement(document, survDiv);
 
-            Elements perkTables = perkDiv.select("table");
-
-            for(Element table : perkTables) {
-                perkList.add(getSurvivorPerks(table, survivor));
+            while(!perkDiv.wholeText().contains("전승 기술")) {
+                perkDiv = crawlerUtil.getNextElement(document, perkDiv);
             }
+
+            perkDiv = crawlerUtil.getNextElement(document, perkDiv);
+            perkList = getSurvivorPerks(perkDiv, survivor);
 
             perkRepository.saveAll(perkList);
         }
-
-
-//
-//        Elements perkDivs = crawlerUtil.getContentsElements(document, "전승 기술");
-//
-//        for(int i = 0; i < perkDivs.size(); i++) {
-//            Element perkDiv = perkDivs.get(i);
-//            Playable survivor = playableList.get(i);
-//            List<Perk> perkList = new ArrayList<>();
-//
-//            Elements tables = perkDiv.select("table");
-//
-//            for(Element table : tables) {
-//                perkList.add(getSurvivorPerks(table, survivor));
-//            }
-//
-//            perkRepository.saveAll(perkList);
-//        }
-
-
-
-//        Elements tables = document.select("table.AVEibs0x");
-
-
-
-//        Playable player = null;
-//        List<Perk> perkList = new ArrayList<>();
-//
-//        for(Element table : tables) {
-//            Elements survInfoEl = table.select("div.Fm-HYseR div");
-//
-//            if(!survInfoEl.isEmpty() && table.text().contains("신음 소리")) {
-//                // 생존자 기본 정보 table일 경우
-//                player = playableRepository.save(getSurvivorName(table));
-//
-//            } else if(table.text().contains("기술")){
-//                // 생존자 기술 정보 table일 경우
-//                perkList.add(getSurvivorPerks(table, player));
-//
-//                // 기술정보 3개 수집 후 현재 player 및 Perk 리스트 리셋
-//                if(perkList.size() == 3) {
-//                    player = null;
-//
-//                    perkRepository.saveAll(perkList);
-//                    perkList = new ArrayList<>();
-//                }
-//
-//            }
-//        }
     }
 
     public Playable getSurvivorName(Element table) {
@@ -183,30 +126,76 @@ public class SurvivorCrawler {
         return playable;
     }
 
-    public Perk getSurvivorPerks(Element table, Playable player) {
-        Perk perk = Perk.builder()
-                .role(player.getRole())
-                .playableName(player.getName())
-                .playableEnName(player.getEnName())
-                .build();
+    public List<Perk> getSurvivorPerks(Element perkDiv, Playable player) {
+        List<Perk> perkList = new ArrayList<>();
 
-        String imgSrc = table.select("noscript img").attr("src");
+        Elements tables = perkDiv.select("table");
 
-        Elements nameElement = table.select("tr:nth-of-type(2) td div strong span");
+        if(tables.size() == 3) {
+            for(Element table : tables) {
+                Perk perk = Perk.builder()
+                        .role(player.getRole())
+                        .playableName(player.getName())
+                        .playableEnName(player.getEnName())
+                        .build();
 
-        String name = nameElement.get(0).ownText();
-        String en_name = nameElement.get(1).ownText();
+                String imgSrc = table.select("noscript img").attr("src");
 
-        Element descriptionSpan = table.select("tr td[rowspan='2'] div span").get(0);
+                Elements nameElement = table.select("tr:nth-of-type(2) td div strong span");
 
-        String description = descriptionSpan.html();
+                String name = nameElement.get(0).ownText();
+                String en_name = nameElement.get(1).ownText();
 
-        perk.setImg(namuWikiDomain+imgSrc);
-        perk.setName(name);
-        perk.setEnName(en_name);
-        perk.setDescription(description.replaceAll("\n", " "));
+                Element descriptionSpan = table.select("tr td[rowspan='2'] div span").get(0);
 
-        return perk;
+                String description = descriptionSpan.html();
+
+                perk.setImg(namuWikiDomain+imgSrc);
+                perk.setName(name);
+                perk.setEnName(en_name);
+                perk.setDescription(description.replaceAll("\n", " "));
+
+                perkList.add(perk);
+            }
+        } else if(tables.size() == 1) {
+            tables = tables.select("td");
+
+            for (Element perkTable : tables) {
+
+                for (Element perkElement : perkTable.children()) {
+
+                    Perk perk = Perk.builder()
+                            .role(player.getRole())
+                            .playableName(player.getName())
+                            .playableEnName(player.getEnName())
+                            .build();
+
+                    Elements spans = perkElement.select("div div div div div span");
+                    // 이미지 경로
+                    String imgSrc = spans.select("noscript img").attr("src");
+
+                    // 한글명
+                    String name = spans.select("span strong").get(0).ownText();
+
+                    // 영문명
+                    String en_name = spans.select("span strong").get(1).ownText();
+
+                    // 설명
+                    Element descriptionSpan = perkElement.select("dl dd div span:nth-child(1)").get(0);
+
+                    String description = descriptionSpan.html();
+
+                    perk.setImg(namuWikiDomain+imgSrc);
+                    perk.setName(name);
+                    perk.setEnName(en_name);
+                    perk.setDescription(description.replaceAll("\n", " "));
+
+                    perkList.add(perk);
+                }
+
+            }
+        }
+        return perkList;
     }
 
 
