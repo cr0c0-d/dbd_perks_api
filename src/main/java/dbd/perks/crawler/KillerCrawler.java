@@ -209,8 +209,7 @@ public class KillerCrawler {
             for(Element perkElement : perkTables) {
                 Perk perk = Perk.builder()
                         .role(killer.getRole())
-                        .playableName(killer.getName())
-                        .playableEnName(killer.getEnName())
+                        .playableId(killer.getId())
                         .build();
 
                 String imgSrc = perkElement.select("noscript img").attr("src");
@@ -248,8 +247,7 @@ public class KillerCrawler {
 
                     Perk perk = Perk.builder()
                             .role(killer.getRole())
-                            .playableName(killer.getName())
-                            .playableEnName(killer.getEnName())
+                            .playableId(killer.getId())
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
