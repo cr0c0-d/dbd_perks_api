@@ -58,6 +58,17 @@ public class SurvivorCrawler {
 
     public void getSurvivorData(Document document) {
 
+        /***** 정규식을 사용해 나무위키 내 주석([1] 형식의 a 태그) 찾기 *****/
+        Elements links = document.select("a");
+
+        for (Element link : links) {
+            String text = link.text();
+            if (text.matches("[^>]*\\[[A-Z0-9]+\\]")) { // 대괄호 안에 1 이상의 숫자 혹은 알파벳 대문자가 있는지 확인
+                link.remove(); // 해당 a 태그 삭제
+            }
+        }
+        /***********************************************/
+
         // 생존자 한글명 리스트
         List<String> survNames = new ArrayList<>();
 
@@ -88,6 +99,13 @@ public class SurvivorCrawler {
             Element survDiv = crawlerUtil.getContentsElement(document, survName);
 
             if(survDiv == null) {
+                continue;
+            }
+
+            // 미출시 이미지
+            Elements imgUpcoming = survDiv.select("img[alt='DBD DLC Upcoming']");
+            if(!imgUpcoming.isEmpty()) {
+                // 미출시 캐릭터의 경우 스킵
                 continue;
             }
 
@@ -144,13 +162,13 @@ public class SurvivorCrawler {
                 Elements nameElement = table.select("tr:nth-of-type(2) td div strong span");
 
                 String name = nameElement.get(0).ownText();
-                String en_name = nameElement.get(1).ownText();
+                String en_name = nameElement.get(nameElement.size()-1).ownText();
 
                 Element descriptionSpan = table.select("tr td[rowspan='2'] div span").get(0);
 
                 String description = descriptionSpan.html();
 
-                perk.setImg(namuWikiDomain+imgSrc);
+                perk.setImg(imgSrc);
                 perk.setName(name);
                 perk.setEnName(en_name);
                 perk.setDescription(description.replaceAll("\n", " "));
@@ -184,7 +202,7 @@ public class SurvivorCrawler {
 
                     String description = descriptionSpan.html();
 
-                    perk.setImg(namuWikiDomain+imgSrc);
+                    perk.setImg(imgSrc);
                     perk.setName(name);
                     perk.setEnName(en_name);
                     perk.setDescription(description.replaceAll("\n", " "));
