@@ -1,7 +1,11 @@
 package dbd.perks.crawler;
 
+import dbd.perks.domain.Addon;
+import dbd.perks.domain.Item;
 import dbd.perks.domain.Perk;
 import dbd.perks.domain.Playable;
+import dbd.perks.repository.AddonRepository;
+import dbd.perks.repository.ItemRepository;
 import dbd.perks.repository.PerkRepository;
 import dbd.perks.repository.PlayableRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,8 @@ public class SurvivorCrawler {
 
     private final PlayableRepository playableRepository;
     private final PerkRepository perkRepository;
+    private final ItemRepository itemRepository;
+    private final AddonRepository addonRepository;
 
     private final CrawlerUtil crawlerUtil;
     private final ScrollCrawler scrollCrawler;
@@ -29,10 +35,19 @@ public class SurvivorCrawler {
     private String namuWikiDomain = "https://namu.wiki";
 
     /**
-     * 생존자 문서 목록
+     * 생존자 오리지널 문서
      */
     private String survivorDocUrlOri = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EC%83%9D%EC%A1%B4%EC%9E%90/%EC%98%A4%EB%A6%AC%EC%A7%80%EB%84%90%20%EC%BA%90%EB%A6%AD%ED%84%B0";
+
+    /**
+     * 생존자 라이센스 문서
+     */
     private String survivorDocUrlLic = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EC%83%9D%EC%A1%B4%EC%9E%90/%EB%9D%BC%EC%9D%B4%EC%84%A0%EC%8A%A4%20%EC%BA%90%EB%A6%AD%ED%84%B0";
+
+    /**
+     * 생존자 아이템 문서
+     */
+    private String itemDocUrl = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EC%95%84%EC%9D%B4%ED%85%9C";
 
     /**
      * 생존자 크롤러 실행
@@ -45,15 +60,21 @@ public class SurvivorCrawler {
      * 생존자 문서를 불러와 각 데이터를 수집하는 함수
      */
     public void getSurvivorDocument() {
-        // Jsoup 연결 - 생존자 오리지널
-        Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
+//        // Selenium 연결 - 생존자(오리지널)
+//        Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
+//
+//        getSurvivorData(documentOri);
+//
+//        // Selenium 연결 - 생존자(라이센스)
+//        Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
+//
+//        getSurvivorData(documentLic);
 
-        getSurvivorData(documentOri);
 
-        // Jsoup 연결 - 생존자 라이센스
-        Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
+        // Selenium 연결 - 생존자 아이템
+        Document documentItem = scrollCrawler.getDocumentByScrollCrawler(itemDocUrl);
 
-        getSurvivorData(documentLic);
+        getSurvivorItems(documentItem);
     }
 
     public void getSurvivorData(Document document) {
@@ -207,5 +228,89 @@ public class SurvivorCrawler {
         return perkList;
     }
 
+    public void getSurvivorItems(Document document) {
+        // 주석 제거
+        document = crawlerUtil.removeAnnotation(document);
+
+        Element curDiv = crawlerUtil.getContentsElement(document, "종류");
+        String curTypeName = null;
+        String curTypeEnName = null;
+
+        while(true) {
+            /********************* 아이템 타입 *********************/
+            curDiv = crawlerUtil.getNextElement(document, curDiv);
+
+            if(!curDiv.select("h2").isEmpty()) {
+                break;
+            }
+
+            // 문단번호 링크 제거
+            curDiv.selectFirst("a").remove();
+
+            String[] fullname = curDiv.selectFirst("span").wholeOwnText().split("\\(");
+            curTypeName = fullname[0];
+            curTypeEnName = fullname[1].substring(0, fullname[1].length()-1);
+
+            /********************* 아이템 목록 *********************/
+            curDiv = crawlerUtil.getNextElement(document, curDiv);
+            Elements tables = curDiv.select("table");
+
+            for(Element table : tables) {
+                Elements trs = table.select("tr");
+                String img = trs.get(0).select("noscript img").attr("src");
+
+                Element nameElement = trs.get(0).child(1).selectFirst("div span");
+                String name = nameElement.child(0).text();
+                String enName = nameElement.child(1).text();
+                String level = nameElement.ownText();
+                String description = trs.get(1).selectFirst("td").html();
+
+                itemRepository.save(Item.builder()
+                        .name(name)
+                        .enName(enName)
+                        .level(level)
+                        .typeName(curTypeName)
+                        .typeEnName(curTypeEnName)
+                        .img(img)
+                        .description(description)
+                        .build());
+            }
+
+            /********************* 애드온 목록 *********************/
+            Element addonDiv = crawlerUtil.getNextElement(document, curDiv);
+            if(!addonDiv.wholeText().contains("애드온")) {
+                break;
+            }
+
+            curDiv = crawlerUtil.getNextElement(document, addonDiv);
+
+            Elements addonTables = curDiv.select("table");
+
+            for(Element addonTable : addonTables) {
+                Elements trs = addonTable.select("tr");
+                String img = trs.get(0).select("noscript img").attr("src");
+
+                Element nameElement = trs.get(0).child(1).selectFirst("div span");
+                String name = nameElement.child(0).text();
+                String enName = nameElement.child(1).text();
+                String level = nameElement.ownText();
+                String description = trs.get(1).selectFirst("td").html();
+
+                addonRepository.save(Addon.builder()
+                        .name(name)
+                        .enName(enName)
+                        .level(level)
+                        .typeName(curTypeName)
+                        .typeEnName(curTypeEnName)
+                        .img(img)
+                        .description(description)
+                        .build());
+            }
+
+
+        }
+
+
+    }
 
 }

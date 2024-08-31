@@ -1,23 +1,8 @@
 package dbd.perks.crawler;
 
-import dbd.perks.domain.Playable;
-import dbd.perks.domain.Item;
-import dbd.perks.domain.Perk;
-import dbd.perks.repository.AddonRepository;
-import dbd.perks.repository.PerkRepository;
-import dbd.perks.repository.PlayableRepository;
-import dbd.perks.repository.WeaponRepository;
+import dbd.perks.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +12,7 @@ public class DataCrawler {
     private final PerkRepository perkRepository;
     private final WeaponRepository weaponRepository;
     private final AddonRepository addonRepository;
+    private final ItemRepository itemRepository;
 
     private final CrawlerUtil crawlerUtil;
     private final ScrollCrawler scrollCrawler;
@@ -39,7 +25,7 @@ public class DataCrawler {
     }
 
     public void runSurvivorCrawler() {
-        SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, crawlerUtil, scrollCrawler);
+        SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, itemRepository, addonRepository, crawlerUtil, scrollCrawler);
         survivorCrawler.runSurvivorCrawler();
     }
 }
