@@ -30,22 +30,30 @@ public class Item {
     @Column
     private String level;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
     private String img;
+
+    @Column
+    private String typeName;
+
+    @Column
+    private String typeEnName;
 
     @CreatedDate
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Item(String name, String enName, String level, String description, String img) {
+    public Item(String name, String enName, String level, String description, String img, String typeName, String typeEnName) {
         this.name = name;
         this.enName = enName;
         this.level = level;
         this.description = description;
         this.img = img;
+        this.typeName = typeName;
+        this.typeEnName = typeEnName;
     }
 }

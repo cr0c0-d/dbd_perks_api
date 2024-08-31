@@ -27,7 +27,10 @@ public class Addon {
     private String enName;
 
     @Column
-    private String type;
+    private String typeName;
+
+    @Column
+    private String typeEnName;
 
     @Column
     private String level;
@@ -46,10 +49,11 @@ public class Addon {
     private LocalDateTime createdAt;
 
     @Builder
-    public Addon(String name, String enName, String type, String level, Long killerId, String description, String img) {
+    public Addon(String name, String enName, String typeName, String typeEnName, String level, Long killerId, String description, String img) {
         this.name = name;
         this.enName = enName;
-        this.type = type;
+        this.typeName = typeName;
+        this.typeEnName = typeEnName;
         this.level = level;
         this.killerId = killerId;
         this.description = description;
