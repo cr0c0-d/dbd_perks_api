@@ -18,7 +18,11 @@ public class CrawlerUtil {
     public Element getContentsElement(Document document, String titleString) {
 
         // 문서의 본문 부분 div
-        Element contents = document.selectFirst("hr").parent();
+        Element span = document.selectFirst("span:contains(분류)").parent();
+        Element contents = span.nextElementSibling();
+        while(contents.childrenSize() < 3) {
+            contents = contents.nextElementSibling();
+        }
 
         // 제목 요소를 이용해 본문 영역을 찾는 과정
         // 제목 span 요소
@@ -57,7 +61,11 @@ public class CrawlerUtil {
     public Elements getContentsElements(Document document, String titleString) {
 
         // 문서의 본문 부분 div
-        Element contents = document.selectFirst("hr").parent();
+        Element span = document.selectFirst("span:contains(분류)").parent();
+        Element contents = span.nextElementSibling();
+        while(contents.childrenSize() < 3) {
+            contents = contents.nextElementSibling();
+        }
 
         Elements titleDivs = document.select("div h2 span:contains(" + titleString + ")");
 
@@ -86,7 +94,11 @@ public class CrawlerUtil {
 
     public Element getNextElement(Document document, Element element) {
         // 문서의 본문 부분 div
-        Element contents = document.selectFirst("hr").parent();
+        Element span = document.selectFirst("span:contains(분류)").parent();
+        Element contents = span.nextElementSibling();
+        while(contents.childrenSize() < 3) {
+            contents = contents.nextElementSibling();
+        }
 
         if(contents.children().contains(element)) {
             if(contents.childrenSize() > element.siblingIndex()) {
