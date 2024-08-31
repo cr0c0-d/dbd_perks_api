@@ -58,16 +58,8 @@ public class SurvivorCrawler {
 
     public void getSurvivorData(Document document) {
 
-        /***** 정규식을 사용해 나무위키 내 주석([1] 형식의 a 태그) 찾기 *****/
-        Elements links = document.select("a");
-
-        for (Element link : links) {
-            String text = link.text();
-            if (text.matches("[^>]*\\[[A-Z0-9]+\\]")) { // 대괄호 안에 1 이상의 숫자 혹은 알파벳 대문자가 있는지 확인
-                link.remove(); // 해당 a 태그 삭제
-            }
-        }
-        /***********************************************/
+        // 주석 제거
+        document = crawlerUtil.removeAnnotation(document);
 
         // 생존자 한글명 리스트
         List<String> survNames = new ArrayList<>();

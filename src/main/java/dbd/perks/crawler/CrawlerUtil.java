@@ -118,4 +118,22 @@ public class CrawlerUtil {
             }
         }
     }
+
+    /**
+     * 문서 객체 Document를 받아 주석([1] 형식의 a 태그)을 제거 후 반환
+     * @param document 문서
+     * @return 주석이 제거된 Document
+     */
+    public Document removeAnnotation(Document document) {
+        Elements links = document.select("a");
+
+        for (Element link : links) {
+            String text = link.text();
+            if (text.matches("[^>]*\\[[A-Z0-9]+\\]")) { // 대괄호 안에 1 이상의 숫자 혹은 알파벳 대문자가 있는지 확인
+                link.remove(); // 해당 a 태그 삭제
+            }
+        }
+
+        return document;
+    }
 }
