@@ -132,7 +132,7 @@ public class SurvivorCrawler {
 
         Elements tables = perkDiv.select("table");
 
-        if(tables.size() == 3) {
+        if(tables.size() > 1) {
             for(Element table : tables) {
                 Perk perk = Perk.builder()
                         .role(player.getRole())
