@@ -11,8 +11,13 @@ public class TestController {
 
     private final DataCrawler dataCrawler;
 
-    @GetMapping("/api/crawlerTest")
-    public void test() {
+    @GetMapping("/api/runKillerCrawler")
+    public void runKillerCrawler() {
+        dataCrawler.runKillerCrawler();
+    }
+
+    @GetMapping("/api/runSurvivorCrawler")
+    public void runSurvivorCrawler() {
         dataCrawler.runSurvivorCrawler();
     }
 
