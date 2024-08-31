@@ -66,11 +66,23 @@ public class KillerCrawler {
             // Jsoup 연결 - 살인마 개별 문서 목록 페이지
             Document document = Jsoup.connect(killerDocsListUrl).get();
 
+            /***** 정규식을 사용해 나무위키 내 주석([1] 형식의 a 태그) 찾기 *****/
+            Elements links = document.select("a");
+
+            for (Element link : links) {
+                String text = link.text();
+                if (text.matches("[^>]*\\[[A-Z0-9]+\\]")) { // 대괄호 안에 1 이상의 숫자 혹은 알파벳 대문자가 있는지 확인
+                    link.remove(); // 해당 a 태그 삭제
+                }
+            }
+            /***********************************************/
+
             // 문서 목록 요소 선택 (다수일 경우 첫 번째 요소)
-            Element listDiv = document.select("._1mly7SSR").get(0);
+            //Element listDiv = document.select("._1mly7SSR").get(0);
 
             // 살인마 개별 문서 링크에 해당하는 div 목록 추출
-            List<Element> filteredDivList = listDiv.children().stream().filter(div ->
+            //List<Element> filteredDivList = listDiv.children().stream().filter(div ->
+            List<Element> filteredDivList = document.select("h3").parents().stream().filter(div ->
                                 div.is("div")   // 1. div 요소일 것
                             && div.child(0).is("h3")    // 2. 자식 요소의 첫 번째 요소가 h3일 것
                             && div.child(0).text().matches("[ㄱ-ㅎ]")).toList();  // 3. h3의 텍스트가 한글 자음 (ㄱ-ㅎ)일 것
@@ -109,7 +121,18 @@ public class KillerCrawler {
                     // 미출시 캐릭터의 경우 스킵
                     continue;
                 }
-                
+
+                /***** 정규식을 사용해 나무위키 내 주석([1] 형식의 a 태그) 찾기 *****/
+                Elements links = document.select("a");
+
+                for (Element link : links) {
+                    String text = link.text();
+                    if (text.matches("[^>]*\\[[A-Z0-9]+\\]")) { // 대괄호 안에 1 이상의 숫자 혹은 알파벳 대문자가 있는지 확인
+                        link.remove(); // 해당 a 태그 삭제
+                    }
+                }
+                /***********************************************/
+
                 Elements tables = document.select("table");
 
                 Element profileTable = null;
@@ -204,7 +227,7 @@ public class KillerCrawler {
         Elements perkTables = perkDiv.select("table tbody");
 
         // perk마다 개별 table이 존재하는 유형
-        if(perkTables.size() == 3) {
+        if(perkTables.size() > 1) {
 
             for(Element perkElement : perkTables) {
                 Perk perk = Perk.builder()
@@ -223,7 +246,7 @@ public class KillerCrawler {
 
                 String description = descriptionSpan.html();
 
-                perk.setImg(namuWikiDomain+imgSrc);
+                perk.setImg(imgSrc);
                 perk.setName(name);
                 perk.setEnName(en_name);
                 perk.setDescription(description.replaceAll("\n", " "));
@@ -265,7 +288,7 @@ public class KillerCrawler {
 
                     String description = descriptionSpan.html();
 
-                    perk.setImg(namuWikiDomain+imgSrc);
+                    perk.setImg(imgSrc);
                     perk.setName(name);
                     perk.setEnName(en_name);
                     perk.setDescription(description.replaceAll("\n", " "));
@@ -301,7 +324,7 @@ public class KillerCrawler {
         String name = nameElement.selectFirst("strong").wholeText();
         String enName = nameElement.select("span").get(nameElement.select("span").size()-1).wholeText();
 
-        weapon.setImg(namuWikiDomain + img);
+        weapon.setImg(img);
         weapon.setName(name);
         weapon.setEnName(enName);
 
@@ -333,7 +356,7 @@ public class KillerCrawler {
                 switch(i) {
                     case 0 :
                         String img = td.select("noscript img").attr("src");
-                        addon.setImg(namuWikiDomain + img);
+                        addon.setImg(img);
                         break;
                     case 1 :
                         Elements aTags = td.select("a");
