@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -255,25 +257,84 @@ public class SurvivorCrawler {
             curDiv = crawlerUtil.getNextElement(document, curDiv);
             Elements tables = curDiv.select("table");
 
-            for(Element table : tables) {
+            if(tables.size() == 1) {
+                Element table = tables.get(0);
                 Elements trs = table.select("tr");
-                String img = trs.get(0).select("noscript img").attr("src");
 
-                Element nameElement = trs.get(0).child(1).selectFirst("div span");
-                String name = nameElement.child(0).text();
-                String enName = nameElement.child(1).text();
-                String level = nameElement.ownText();
-                String description = trs.get(1).selectFirst("td").html();
+                for(Element tr : trs) {
+                    Element imgEl = tr.selectFirst("noscript img");
 
-                itemRepository.save(Item.builder()
-                        .name(name)
-                        .enName(enName)
-                        .level(level)
-                        .typeName(curTypeName)
-                        .typeEnName(curTypeEnName)
-                        .img(img)
-                        .description(description)
-                        .build());
+                    // 이미지가 없는 경우 스킵 (테이블의 제목줄)
+                    if(imgEl == null) {
+                        continue;
+                    }
+
+                    Elements tds = tr.select("td");
+
+                    String img = imgEl.attr("src");
+
+                    String name = null;
+                    String enName = null;
+
+                    String nameText = tds.get(1).text();
+
+                    Pattern pattern = Pattern.compile("([A-Za-z0-9\\s]+)([가-힣0-9\\s]+)|([가-힣0-9\\s]+)([A-Za-z0-9\\s]+)");
+                    Matcher matcher = pattern.matcher(nameText);
+
+                    if(matcher.find()) {
+                        for(int i = 1; i < 3; i++) {
+                            String str = matcher.group(i).trim();
+                            if (str.matches("[A-Za-z0-9\\s]+")) {
+                                enName = str;
+                            } else if (str.matches("[가-힣0-9\\s]+")) {
+                                name = str;
+                            }
+                        }
+                    }
+
+                    String level = tds.get(2).text();
+
+                    String description = tds.get(tds.size()-1).html();
+
+                    itemRepository.save(Item.builder()
+                            .name(name)
+                            .enName(enName)
+                            .level(level)
+                            .typeName(curTypeName)
+                            .typeEnName(curTypeEnName)
+                            .img(img)
+                            .description(description)
+                            .build()
+                    );
+
+                }
+
+            } else {
+                for (Element table : tables) {
+                    Elements trs = table.select("tr");
+                    String img = trs.get(0).select("noscript img").attr("src");
+
+                    Element nameElement = trs.get(0).child(1).selectFirst("div span");
+                    String name = nameElement.child(0).text();
+                    String enName = nameElement.child(1).text().replace("(", "").replace(")", "");
+
+                    if (enName.equals("")) {
+                        enName = nameElement.child(2).text().replace("(", "").replace(")", "");
+                    }
+
+                    String level = nameElement.ownText();
+                    String description = trs.get(1).selectFirst("td").html();
+
+                    itemRepository.save(Item.builder()
+                            .name(name)
+                            .enName(enName)
+                            .level(level)
+                            .typeName(curTypeName)
+                            .typeEnName(curTypeEnName)
+                            .img(img)
+                            .description(description)
+                            .build());
+                }
             }
 
             /********************* 애드온 목록 *********************/
@@ -286,25 +347,79 @@ public class SurvivorCrawler {
 
             Elements addonTables = curDiv.select("table");
 
-            for(Element addonTable : addonTables) {
-                Elements trs = addonTable.select("tr");
-                String img = trs.get(0).select("noscript img").attr("src");
+            if(tables.size() == 1) {
+                Element table = tables.get(0);
+                Elements trs = table.select("tr");
 
-                Element nameElement = trs.get(0).child(1).selectFirst("div span");
-                String name = nameElement.child(0).text();
-                String enName = nameElement.child(1).text();
-                String level = nameElement.ownText();
-                String description = trs.get(1).selectFirst("td").html();
+                for(Element tr : trs) {
+                    Element imgEl = tr.selectFirst("noscript img");
 
-                addonRepository.save(Addon.builder()
-                        .name(name)
-                        .enName(enName)
-                        .level(level)
-                        .typeName(curTypeName)
-                        .typeEnName(curTypeEnName)
-                        .img(img)
-                        .description(description)
-                        .build());
+                    // 이미지가 없는 경우 스킵 (테이블의 제목줄)
+                    if(imgEl == null) {
+                        continue;
+                    }
+
+                    Elements tds = tr.select("td");
+
+                    String img = imgEl.attr("src");
+
+                    String name = null;
+                    String enName = null;
+
+                    String nameText = tds.get(1).text();
+
+                    Pattern pattern = Pattern.compile("([A-Za-z0-9\\s]+)([가-힣0-9\\s]+)|([가-힣0-9\\s]+)([A-Za-z0-9\\s]+)");
+                    Matcher matcher = pattern.matcher(nameText);
+
+                    if(matcher.find()) {
+                        for(int i = 1; i < 3; i++) {
+                            String str = matcher.group(i).trim();
+                            if (str.matches("[A-Za-z0-9\\s]+")) {
+                                enName = str;
+                            } else if (str.matches("[가-힣0-9\\s]+")) {
+                                name = str;
+                            }
+                        }
+                    }
+
+                    String level = tds.get(2).text();
+
+                    String description = tds.get(tds.size()-1).html();
+
+                    addonRepository.save(Addon.builder()
+                            .name(name)
+                            .enName(enName)
+                            .level(level)
+                            .typeName(curTypeName)
+                            .typeEnName(curTypeEnName)
+                            .img(img)
+                            .description(description)
+                            .build()
+                    );
+
+                }
+
+            } else {
+                for (Element addonTable : addonTables) {
+                    Elements trs = addonTable.select("tr");
+                    String img = trs.get(0).select("noscript img").attr("src");
+
+                    Element nameElement = trs.get(0).child(1).selectFirst("div span");
+                    String name = nameElement.child(0).text();
+                    String enName = nameElement.child(1).text().replace("(", "").replace(")", "");;
+                    String level = nameElement.ownText();
+                    String description = trs.get(1).selectFirst("td").html();
+
+                    addonRepository.save(Addon.builder()
+                            .name(name)
+                            .enName(enName)
+                            .level(level)
+                            .typeName(curTypeName)
+                            .typeEnName(curTypeEnName)
+                            .img(img)
+                            .description(description)
+                            .build());
+                }
             }
 
 
