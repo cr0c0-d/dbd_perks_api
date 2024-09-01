@@ -1,6 +1,7 @@
 package dbd.perks.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -29,6 +30,9 @@ public class Offering {
     private String level;
 
     @Column
+    private String role;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -37,4 +41,14 @@ public class Offering {
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Builder
+    public Offering(String name, String enName, String level, String role, String description, String img) {
+        this.name = name;
+        this.enName = enName;
+        this.level = level;
+        this.role = role;
+        this.description = description;
+        this.img = img;
+    }
 }
