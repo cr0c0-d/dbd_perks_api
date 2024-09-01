@@ -13,6 +13,7 @@ public class DataCrawler {
     private final WeaponRepository weaponRepository;
     private final AddonRepository addonRepository;
     private final ItemRepository itemRepository;
+    private final OfferingRepository offeringRepository;
 
     private final CrawlerUtil crawlerUtil;
     private final ScrollCrawler scrollCrawler;
@@ -27,5 +28,10 @@ public class DataCrawler {
     public void runSurvivorCrawler() {
         SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, itemRepository, addonRepository, crawlerUtil, scrollCrawler);
         survivorCrawler.runSurvivorCrawler();
+    }
+
+    public void runOfferingCrawler() {
+        OfferingCrawler offeringCrawler = new OfferingCrawler(offeringRepository, crawlerUtil, scrollCrawler);
+        offeringCrawler.runOfferingCrawler();
     }
 }

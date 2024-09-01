@@ -21,4 +21,9 @@ public class TestController {
         dataCrawler.runSurvivorCrawler();
     }
 
+    @GetMapping("/api/runOfferingCrawler")
+    public void runOfferingCrawler() {
+        dataCrawler.runOfferingCrawler();
+    }
+
 }
