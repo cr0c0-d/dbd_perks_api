@@ -29,9 +29,6 @@ public class ScrollCrawler {
             }
         }
 
-        // 필요한 데이터 추출
-        WebElement element = driver.findElement(By.id("app"));
-
         // 페이지의 HTML 소스 가져오기
         String pageSource = driver.getPageSource();
 
