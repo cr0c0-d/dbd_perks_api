@@ -77,8 +77,8 @@ public class OfferingCrawler {
 
                 Element imgEl = tr.selectFirst("noscript img");
 
-                // 이미지가 없는 경우 스킵 (테이블의 제목줄)
-                if (imgEl == null || tds.size() < 4) {
+                // 테이블 제목줄은 스킵 (조건 : 열 수가 4 미만 || 설명란 텍스트 길이가 10 미만)
+                if (tds.size() < 4 || tds.get(tds.size()-1).text().length() < 10) {
                     continue;
                 }
 
@@ -89,16 +89,19 @@ public class OfferingCrawler {
 
                 String nameText = tds.get(1).text();
 
-                Pattern pattern = Pattern.compile("([A-Za-z0-9\\s]+)([가-힣0-9\\s]+)|([가-힣0-9\\s]+)([A-Za-z0-9\\s]+)");
+                Pattern pattern = Pattern.compile("([^가-힣]+)([가-힣\\s\\d\\p{Punct}]+)|([가-힣\\s\\d\\p{Punct}]+)([^가-힣]+)");
                 Matcher matcher = pattern.matcher(nameText);
 
                 if (matcher.find()) {
                     for (int i = 1; i < 3; i++) {
-                        String str = matcher.group(i).trim();
-                        if (str.matches("[A-Za-z0-9\\s]+")) {
-                            enName = str;
-                        } else if (str.matches("[가-힣0-9\\s]+")) {
+                        String str = matcher.group(i);
+                        if(str == null) {
+                            break;
+                        }
+                        if (str.matches("[가-힣\\s\\d\\p{Punct}]+")) {
                             name = str;
+                        } else {
+                            enName = str;
                         }
                     }
                 }
