@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +30,7 @@ public class OfferingCrawler {
     private String namuWikiDomain = "https://namu.wiki";
 
     private String offeringUrl = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EA%B3%B5%EB%AC%BC";
+    private String offeringEnUrl = "https://deadbydaylight.fandom.com/wiki/Offerings";
 
     /**
      * 오퍼링 크롤러 실행
@@ -41,6 +44,8 @@ public class OfferingCrawler {
      */
     public void getOfferingDocument() {
         Document document = scrollCrawler.getDocumentByScrollCrawler(offeringUrl);
+
+        Document documentEn = null;
 
         // 주석 링크 제거
         document = crawlerUtil.removeAnnotation(document);
@@ -75,40 +80,75 @@ public class OfferingCrawler {
             for (Element tr : trs) {
                 Elements tds = tr.select("td");
 
-                Element imgEl = tr.selectFirst("noscript img");
 
                 // 테이블 제목줄은 스킵 (조건 : 열 수가 4 미만 || 설명란 텍스트 길이가 10 미만)
                 if (tds.size() < 4 || tds.get(tds.size()-1).text().length() < 10) {
                     continue;
                 }
 
-                String img = imgEl.attr("src");
-
                 String name = null;
                 String enName = null;
 
-                String nameText = tds.get(1).text();
+                List<Node> nodeList = tds.get(1).selectFirst("strong").childNodes();
 
-                Pattern pattern = Pattern.compile("([^가-힣]+)([가-힣\\s\\d\\p{Punct}]+)|([가-힣\\s\\d\\p{Punct}]+)([^가-힣]+)");
-                Matcher matcher = pattern.matcher(nameText);
-
-                if (matcher.find()) {
-                    for (int i = 1; i < 3; i++) {
-                        String str = matcher.group(i);
-                        if(str == null) {
-                            break;
-                        }
-                        if (str.matches("[가-힣\\s\\d\\p{Punct}]+")) {
-                            name = str;
-                        } else {
+                for(Node node : nodeList) {
+                    if(node instanceof TextNode) {
+                        TextNode textNode = (TextNode) node;
+                        String str = textNode.text();
+                        if(str.matches("[^가-힣]+")) {
                             enName = str;
+                        } else {
+                            name = str;
                         }
                     }
                 }
 
+//                String nameText = tds.get(1).text();
+//
+//                Pattern pattern = Pattern.compile("([^가-힣]+)([가-힣\\s\\d\\p{Punct}]+)|([가-힣\\s\\d\\p{Punct}]+)([^가-힣]+)");
+//                Matcher matcher = pattern.matcher(nameText);
+//
+//                if (matcher.find()) {
+//                    for (int i = 1; i < 3; i++) {
+//                        String str = matcher.group(i);
+//                        if(str == null) {
+//                            break;
+//                        }
+//                        if (str.matches("[가-힣\\s\\d\\p{Punct}]+")) {
+//                            name = str;
+//                        } else {
+//                            enName = str;
+//                        }
+//                    }
+//                } else {
+//                    name = nameText;
+//                }
+
                 String level = tds.get(2).text();
 
                 String description = tds.get(tds.size() - 1).html();
+
+                Element imgEl = tr.selectFirst("noscript img");
+                String img = null;
+
+                if(imgEl != null) {
+                    img = imgEl.attr("src");
+                } else {
+                    // 이미지 없는 경우 영문위키에서 따올 것.
+                    if(enName != null) {
+                        if(documentEn == null) {
+                            documentEn = scrollCrawler.getDocumentByScrollCrawler(offeringEnUrl);
+                            documentEn = crawlerUtil.removeAnnotation(documentEn);
+                        }
+                        Elements aTags = documentEn.select("th a");
+                        for(Element aTag : aTags) {
+                            String str = aTag.html();
+                            if(str.contains(enName)) {
+                                img = aTag.parent().parent().selectFirst("img").attr("data-src");
+                            }
+                        }
+                    }
+                }
 
                 Offering offering = Offering.builder()
                         .name(name)
