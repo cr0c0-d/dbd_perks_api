@@ -62,15 +62,15 @@ public class SurvivorCrawler {
      * 생존자 문서를 불러와 각 데이터를 수집하는 함수
      */
     public void getSurvivorDocument() {
-//        // Selenium 연결 - 생존자(오리지널)
-//        Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
-//
-//        getSurvivorData(documentOri);
-//
-//        // Selenium 연결 - 생존자(라이센스)
-//        Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
-//
-//        getSurvivorData(documentLic);
+        // Selenium 연결 - 생존자(오리지널)
+        Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
+
+        getSurvivorData(documentOri);
+
+        // Selenium 연결 - 생존자(라이센스)
+        Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
+
+        getSurvivorData(documentLic);
 
 
         // Selenium 연결 - 생존자 아이템
