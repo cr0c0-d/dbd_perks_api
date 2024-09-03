@@ -30,6 +30,11 @@ public class DataController {
         dataCrawler.runOfferingCrawler();
     }
 
+    @GetMapping("/api/runCommonPerksCrawler")
+    public void runCommonPerksCrawler() {
+        dataCrawler.runCommonPerksCrawler();
+    }
+
     @GetMapping("/api/getData")
     public ResponseEntity<WholeDataFindResponse> getData() {
         return ResponseEntity.ok()

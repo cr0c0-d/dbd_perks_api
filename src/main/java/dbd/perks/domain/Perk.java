@@ -30,6 +30,7 @@ public class Perk {
     @Column(name = "en_name")
     private String enName;
 
+    // null인 경우 공용퍽
     @Column(name = "playable_id")
     private Long playableId;
 
