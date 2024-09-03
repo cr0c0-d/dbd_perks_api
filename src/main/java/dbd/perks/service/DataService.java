@@ -40,8 +40,8 @@ public class DataService {
         List<OfferingFindResponse> offeringFindResponseList = offeringList.stream().map(OfferingFindResponse::new).toList();
 
         // 퍽
-        List<Perk> perkList = perkRepository.findAll();
-        List<PerkFindResponse> perkFindResponseList = perkList.stream().filter(perk -> playableRepository.findById(perk.getPlayableId()).get().getRole().equals("survivor")).map(PerkFindResponse::new).toList();
+        List<Perk> perkList = perkRepository.findByRole("survivor");
+        List<PerkFindResponse> perkFindResponseList = perkList.stream().map(perk -> new PerkFindResponse(perk, perk.getPlayableId() == null ? null : playableRepository.findById(perk.getPlayableId()).get())).toList();
 
         // 캐릭터
         List<Playable> playableList = playableRepository.findByRole("survivor");
@@ -68,8 +68,8 @@ public class DataService {
         List<OfferingFindResponse> offeringFindResponseList = offeringList.stream().map(OfferingFindResponse::new).toList();
 
         // 퍽
-        List<Perk> perkList = perkRepository.findAll();
-        List<PerkFindResponse> perkFindResponseList = perkList.stream().filter(perk -> playableRepository.findById(perk.getPlayableId()).get().getRole().equals("killer")).map(PerkFindResponse::new).toList();
+        List<Perk> perkList = perkRepository.findByRole("killer");
+        List<PerkFindResponse> perkFindResponseList = perkList.stream().map(perk -> new PerkFindResponse(perk, perk.getPlayableId() == null ? null : playableRepository.findById(perk.getPlayableId()).get())).toList();
 
         // 캐릭터
         List<Playable> playableList = playableRepository.findByRole("killer");

@@ -38,9 +38,6 @@ public class Perk {
     private String description;
 
     @Column
-    private String dlc;
-
-    @Column
     private String img;
 
     @CreatedDate
