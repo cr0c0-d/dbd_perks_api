@@ -47,8 +47,6 @@ public class KillerCrawler {
      */
     private List<String> killerDocsLinkUrlList = new ArrayList<>();
 
-    // private List<Playable> killerList = new ArrayList<>();
-
 
     /**
      * 킬러 크롤러 실행
@@ -66,22 +64,10 @@ public class KillerCrawler {
             // Jsoup 연결 - 살인마 개별 문서 목록 페이지
             Document document = Jsoup.connect(killerDocsListUrl).get();
 
-            /***** 정규식을 사용해 나무위키 내 주석([1] 형식의 a 태그) 찾기 *****/
-            Elements links = document.select("a");
+            document = crawlerUtil.removeAnnotation(document);
 
-            for (Element link : links) {
-                String text = link.text();
-                if (text.matches("[^>]*\\[[A-Z0-9]+\\]")) { // 대괄호 안에 1 이상의 숫자 혹은 알파벳 대문자가 있는지 확인
-                    link.remove(); // 해당 a 태그 삭제
-                }
-            }
-            /***********************************************/
-
-            // 문서 목록 요소 선택 (다수일 경우 첫 번째 요소)
-            //Element listDiv = document.select("._1mly7SSR").get(0);
 
             // 살인마 개별 문서 링크에 해당하는 div 목록 추출
-            //List<Element> filteredDivList = listDiv.children().stream().filter(div ->
             List<Element> filteredDivList = document.select("h3").parents().stream().filter(div ->
                                 div.is("div")   // 1. div 요소일 것
                             && div.child(0).is("h3")    // 2. 자식 요소의 첫 번째 요소가 h3일 것
@@ -318,7 +304,7 @@ public class KillerCrawler {
 
         weapon.setImg(img);
         weapon.setName(name);
-        weapon.setEnName(enName);
+        weapon.setEnName(enName.replace("(", "").replace(")", ""));
 
         return weapon;
     }
