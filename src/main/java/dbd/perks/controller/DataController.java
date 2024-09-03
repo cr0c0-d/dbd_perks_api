@@ -5,6 +5,7 @@ import dbd.perks.dto.WholeDataFindResponse;
 import dbd.perks.service.DataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,8 @@ public class DataController {
     private final DataCrawler dataCrawler;
 
 
+    // 매일 자정에 실행
+    @Scheduled(cron = "0 0 0 * * *")
     @GetMapping("/api/runCrawlerAll")
     public void runCrawlerAll() {
         dataCrawler.runCrawlerAll();
