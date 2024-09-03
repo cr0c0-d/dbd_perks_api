@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PlayableRepository extends JpaRepository<Playable, Long> {
-    List<Playable> findAllByRole(String role);
+    List<Playable> findByRole(String role);
 }

@@ -44,7 +44,7 @@ public class DataService {
         List<PerkFindResponse> perkFindResponseList = perkList.stream().filter(perk -> playableRepository.findById(perk.getPlayableId()).get().getRole().equals("survivor")).map(PerkFindResponse::new).toList();
 
         // 캐릭터
-        List<Playable> playableList = playableRepository.findAllByRole("survivor");
+        List<Playable> playableList = playableRepository.findByRole("survivor");
         List<PlayableFindResponse> playableFindResponseList = playableList.stream().map(PlayableFindResponse::new).toList();
 
         return new SurvivorFindResponse(playableFindResponseList, perkFindResponseList, itemFindResponseList, addonSurvivorFindResponseList, offeringFindResponseList);
@@ -72,7 +72,7 @@ public class DataService {
         List<PerkFindResponse> perkFindResponseList = perkList.stream().filter(perk -> playableRepository.findById(perk.getPlayableId()).get().getRole().equals("killer")).map(PerkFindResponse::new).toList();
 
         // 캐릭터
-        List<Playable> playableList = playableRepository.findAllByRole("killer");
+        List<Playable> playableList = playableRepository.findByRole("killer");
         List<PlayableFindResponse> playableFindResponseList = playableList.stream().map(PlayableFindResponse::new).toList();
 
         return new KillerFindResponse(playableFindResponseList, perkFindResponseList, weaponFindResponseList, addonKillerFindResponseList, offeringFindResponseList);
