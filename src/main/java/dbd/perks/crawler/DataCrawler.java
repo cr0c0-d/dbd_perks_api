@@ -18,6 +18,13 @@ public class DataCrawler {
     private final CrawlerUtil crawlerUtil;
     private final ScrollCrawler scrollCrawler;
 
+    public void runCrawlerAll() {
+        runKillerCrawler();
+        runSurvivorCrawler();
+        runOfferingCrawler();
+        runCommonPerksCrawler();
+    }
+
     public void runKillerCrawler() {
         KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil);
 
@@ -33,5 +40,10 @@ public class DataCrawler {
     public void runOfferingCrawler() {
         OfferingCrawler offeringCrawler = new OfferingCrawler(offeringRepository, crawlerUtil, scrollCrawler);
         offeringCrawler.runOfferingCrawler();
+    }
+
+    public void runCommonPerksCrawler() {
+        CommonPerksCrawler commonPerksCrawler = new CommonPerksCrawler(perkRepository, crawlerUtil, scrollCrawler);
+        commonPerksCrawler.runCommonPerksCrawler();
     }
 }

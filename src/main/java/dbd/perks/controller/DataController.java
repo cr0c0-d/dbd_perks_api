@@ -15,6 +15,12 @@ public class DataController {
     private final DataService dataService;
     private final DataCrawler dataCrawler;
 
+
+    @GetMapping("/api/runCrawlerAll")
+    public void runCrawlerAll() {
+        dataCrawler.runCrawlerAll();
+    }
+
     @GetMapping("/api/runKillerCrawler")
     public void runKillerCrawler() {
         dataCrawler.runKillerCrawler();
