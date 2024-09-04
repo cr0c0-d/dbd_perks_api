@@ -3,6 +3,7 @@ package dbd.perks.controller;
 import dbd.perks.crawler.DataCrawler;
 import dbd.perks.dto.WholeDataFindResponse;
 import dbd.perks.service.DataService;
+import dbd.perks.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +16,8 @@ public class DataController {
 
     private final DataService dataService;
     private final DataCrawler dataCrawler;
+
+    private final EmailService emailService;
 
 
     // 매일 자정에 실행
@@ -48,6 +51,11 @@ public class DataController {
     public ResponseEntity<WholeDataFindResponse> getData() {
         return ResponseEntity.ok()
                 .body(dataService.getData());
-    };
+    }
+
+    @GetMapping("/api/mailTest")
+    public void sendMail() {
+        emailService.sendEmail("테스트");
+    }
 
 }
