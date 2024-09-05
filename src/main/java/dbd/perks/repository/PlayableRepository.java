@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PlayableRepository extends JpaRepository<Playable, Long> {
     List<Playable> findByRole(String role);
+    List<Playable> findByVer(Long ver);
 }

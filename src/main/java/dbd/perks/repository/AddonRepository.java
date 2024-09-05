@@ -9,4 +9,6 @@ public interface AddonRepository extends JpaRepository<Addon, Long> {
 
     List<Addon> findAllByKillerIdIsNull();
     List<Addon> findAllByKillerIdIsNotNull();
+
+    List<Addon> findByVer(Long ver);
 }

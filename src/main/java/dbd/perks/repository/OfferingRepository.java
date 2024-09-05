@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OfferingRepository extends JpaRepository<Offering, Long> {
     List<Offering> findByRoleIn(List<String> roles);
+
+    List<Offering> findByVer(Long ver);
 }

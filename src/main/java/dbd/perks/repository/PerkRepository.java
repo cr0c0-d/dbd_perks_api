@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PerkRepository extends JpaRepository<Perk, Long> {
     List<Perk> findByRole(String role);
+
+    List<Perk> findByVer(Long ver);
 }
