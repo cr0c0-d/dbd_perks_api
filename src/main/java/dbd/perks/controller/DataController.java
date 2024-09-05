@@ -26,36 +26,30 @@ public class DataController {
     public void runCrawlerAll() {
         dataCrawler.runCrawlerAll();
     }
-
-    @GetMapping("/api/runKillerCrawler")
-    public void runKillerCrawler() {
-        dataCrawler.runKillerCrawler();
-    }
-
-    @GetMapping("/api/runSurvivorCrawler")
-    public void runSurvivorCrawler() {
-        dataCrawler.runSurvivorCrawler();
-    }
-
-    @GetMapping("/api/runOfferingCrawler")
-    public void runOfferingCrawler() {
-        dataCrawler.runOfferingCrawler();
-    }
-
-    @GetMapping("/api/runCommonPerksCrawler")
-    public void runCommonPerksCrawler() {
-        dataCrawler.runCommonPerksCrawler();
-    }
+//
+//    @GetMapping("/api/runKillerCrawler")
+//    public void runKillerCrawler() {
+//        dataCrawler.runKillerCrawler();
+//    }
+//
+//    @GetMapping("/api/runSurvivorCrawler")
+//    public void runSurvivorCrawler() {
+//        dataCrawler.runSurvivorCrawler();
+//    }
+//
+//    @GetMapping("/api/runOfferingCrawler")
+//    public void runOfferingCrawler() {
+//        dataCrawler.runOfferingCrawler();
+//    }
+//
+//    @GetMapping("/api/runCommonPerksCrawler")
+//    public void runCommonPerksCrawler() {
+//        dataCrawler.runCommonPerksCrawler();
+//    }
 
     @GetMapping("/api/getData")
     public ResponseEntity<WholeDataFindResponse> getData() {
         return ResponseEntity.ok()
                 .body(dataService.getData());
     }
-
-    @GetMapping("/api/mailTest")
-    public void sendMail() {
-        emailService.sendEmail("테스트");
-    }
-
 }
