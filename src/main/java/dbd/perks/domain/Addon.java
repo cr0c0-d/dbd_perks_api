@@ -44,12 +44,15 @@ public class Addon {
     @Column
     private String img;
 
+    @Column
+    private Long ver;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Addon(String name, String enName, String typeName, String typeEnName, String level, Long killerId, String description, String img) {
+    public Addon(String name, String enName, String typeName, String typeEnName, String level, Long killerId, String description, String img, Long ver) {
         this.name = name;
         this.enName = enName;
         this.typeName = typeName;
@@ -58,5 +61,6 @@ public class Addon {
         this.killerId = killerId;
         this.description = description;
         this.img = img;
+        this.ver = ver;
     }
 }

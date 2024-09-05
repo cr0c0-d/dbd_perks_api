@@ -40,17 +40,21 @@ public class Perk {
     @Column
     private String img;
 
+    @Column
+    private Long ver;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Perk(String role, String name, String enName, Long playableId, String description, String img) {
+    public Perk(String role, String name, String enName, Long playableId, String description, String img, Long ver) {
         this.role = role;
         this.name = name;
         this.enName = enName;
         this.playableId = playableId;
         this.description = description;
         this.img = img;
+        this.ver = ver;
     }
 }

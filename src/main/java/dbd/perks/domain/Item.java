@@ -42,12 +42,15 @@ public class Item {
     @Column
     private String typeEnName;
 
+    @Column
+    private Long ver;
+
     @CreatedDate
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Item(String name, String enName, String level, String description, String img, String typeName, String typeEnName) {
+    public Item(String name, String enName, String level, String description, String img, String typeName, String typeEnName, Long ver) {
         this.name = name;
         this.enName = enName;
         this.level = level;
@@ -55,5 +58,6 @@ public class Item {
         this.img = img;
         this.typeName = typeName;
         this.typeEnName = typeEnName;
+        this.ver = ver;
     }
 }

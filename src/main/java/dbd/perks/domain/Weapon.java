@@ -32,15 +32,19 @@ public class Weapon {
     @Column(name = "killer_id")
     private Long killerId;
 
+    @Column
+    private Long ver;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Weapon(String name, String enName, String img, Long killerId) {
+    public Weapon(String name, String enName, String img, Long killerId, Long ver) {
         this.name = name;
         this.enName = enName;
         this.img = img;
         this.killerId = killerId;
+        this.ver = ver;
     }
 }

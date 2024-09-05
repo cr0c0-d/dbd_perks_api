@@ -38,17 +38,21 @@ public class Offering {
     @Column
     private String img;
 
+    @Column
+    private Long ver;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Offering(String name, String enName, String level, String role, String description, String img) {
+    public Offering(String name, String enName, String level, String role, String description, String img, Long ver) {
         this.name = name;
         this.enName = enName;
         this.level = level;
         this.role = role;
         this.description = description;
         this.img = img;
+        this.ver = ver;
     }
 }

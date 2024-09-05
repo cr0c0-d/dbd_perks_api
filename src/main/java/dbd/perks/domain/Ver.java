@@ -7,40 +7,32 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Setter
 @Getter
+@Entity
 @EntityListeners(AuditingEntityListener.class)
-@AllArgsConstructor
 @NoArgsConstructor
-public class Playable {
+@AllArgsConstructor
+public class Ver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
-    private Long id;
-
-    @Column
-    private String role;
-
-    @Column(name = "en_name")
-    private String enName;
-
-    @Column
-    private String name;
-
-    @Column
     private Long ver;
+
+    @Column
+    private String type;
+
+    @Column(name = "doc_update_time")
+    private LocalDateTime docUpdateTime;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Playable(String role, String enName, String name, Long ver) {
-        this.role = role;
-        this.enName = enName;
-        this.name = name;
-        this.ver = ver;
+    public Ver(String type, LocalDateTime docUpdateTime) {
+        this.type = type;
+        this.docUpdateTime = docUpdateTime;
     }
+
 }
