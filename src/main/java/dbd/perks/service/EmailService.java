@@ -12,15 +12,11 @@ public class EmailService {
 
     private String receiverMail = "hyde69ciel@naver.com";
 
-    private String mailSubject = "hyde69ciel@naver.com";
-
-    private String mailBody = "예시 메일 내용";
-
-    public void sendEmail(String body) {
+    public void sendEmail(String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(receiverMail);
-        message.setSubject(mailSubject);
-        message.setText(mailBody);
+        message.setSubject(subject);
+        message.setText(body);
         mailSender.send(message);
     }
 }
