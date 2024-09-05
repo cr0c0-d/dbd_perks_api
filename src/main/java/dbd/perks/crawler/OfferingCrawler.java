@@ -32,10 +32,13 @@ public class OfferingCrawler {
     private String offeringUrl = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EA%B3%B5%EB%AC%BC";
     private String offeringEnUrl = "https://deadbydaylight.fandom.com/wiki/Offerings";
 
+    private Long ver;
+
     /**
      * 오퍼링 크롤러 실행
      */
-    public void runOfferingCrawler() {
+    public void runOfferingCrawler(Long version) {
+        ver = version;
         getOfferingDocument();
     }
 
@@ -68,10 +71,6 @@ public class OfferingCrawler {
                     titleEl.select("a").forEach(Node::remove);
                     title = titleEl.text();
                 }
-                continue;
-            }
-
-            if(title.equals("달빛") || title.equals("쐐기")) {
                 continue;
             }
 
@@ -127,6 +126,11 @@ public class OfferingCrawler {
                 String level = tds.get(2).text();
 
                 String description = tds.get(tds.size() - 1).html();
+                
+                // 만료된 공물 스킵
+                if(description.contains("이 공물은 만료되어")) {
+                    continue;
+                }
 
                 Element imgEl = tr.selectFirst("noscript img");
                 String img = null;
@@ -156,6 +160,7 @@ public class OfferingCrawler {
                         .level(level)
                         .img(img)
                         .description(description)
+                        .ver(ver)
                         .build();
 
                 offering.setRole(getRole(title, offering));

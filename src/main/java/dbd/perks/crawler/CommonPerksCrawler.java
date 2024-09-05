@@ -29,11 +29,13 @@ public class CommonPerksCrawler {
      */
     private String perkUrl = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EA%B8%B0%EC%88%A0";
 
+    private Long ver;
 
     /**
      * 공용 기술 크롤러 실행
      */
-    public void runCommonPerksCrawler() {
+    public void runCommonPerksCrawler(Long version) {
+        ver = version;
         getCommonPerksDocument();
     }
 
@@ -82,6 +84,7 @@ public class CommonPerksCrawler {
 
                         Perk perk = Perk.builder()
                                 .role(role)
+                                .ver(ver)
                                 .build();
 
                         String imgSrc = perkElement.select("noscript img").attr("src");

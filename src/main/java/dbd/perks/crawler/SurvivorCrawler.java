@@ -51,10 +51,15 @@ public class SurvivorCrawler {
      */
     private String itemDocUrl = "https://namu.wiki/w/DEAD%20BY%20DAYLIGHT/%EC%95%84%EC%9D%B4%ED%85%9C";
 
+
+    // 현재 데이터의 버전정보
+    private Long ver;
+
     /**
      * 생존자 크롤러 실행
      */
-    public void runSurvivorCrawler() {
+    public void runSurvivorCrawler(Long version) {
+        ver = version;
         getSurvivorDocument();
     }
 
@@ -62,6 +67,8 @@ public class SurvivorCrawler {
      * 생존자 문서를 불러와 각 데이터를 수집하는 함수
      */
     public void getSurvivorDocument() {
+
+
         // Selenium 연결 - 생존자(오리지널)
         Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
 
@@ -107,6 +114,7 @@ public class SurvivorCrawler {
             Playable survivor = Playable.builder()
                     .name(survName)
                     .role("survivor")
+                    .ver(ver)
                     .build();
 
             List<Perk> perkList = null;
@@ -144,22 +152,6 @@ public class SurvivorCrawler {
         }
     }
 
-    public Playable getSurvivorName(Element table) {
-        Playable playable = Playable.builder()
-                .role("survivor")
-                .build();
-
-        Elements nameSpans = table.select("tbody tr td div div span strong span");
-        for(Element nameSpan : nameSpans) {
-            if(nameSpan.childrenSize() > 1) {
-                playable.setEnName(nameSpan.child(0).ownText());
-                playable.setName(nameSpan.child(nameSpan.childrenSize() - 1).ownText());
-            }
-        }
-
-        return playable;
-    }
-
     public List<Perk> getSurvivorPerks(Element perkDiv, Playable player) {
         List<Perk> perkList = new ArrayList<>();
 
@@ -170,6 +162,7 @@ public class SurvivorCrawler {
                 Perk perk = Perk.builder()
                         .role(player.getRole())
                         .playableId(player.getId())
+                        .ver(ver)
                         .build();
 
                 String imgSrc = table.select("noscript img").attr("src");
@@ -200,6 +193,7 @@ public class SurvivorCrawler {
                     Perk perk = Perk.builder()
                             .role(player.getRole())
                             .playableId(player.getId())
+                            .ver(ver)
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
@@ -304,6 +298,7 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
+                            .ver(ver)
                             .build()
                     );
 
@@ -333,6 +328,7 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
+                            .ver(ver)
                             .build());
                 }
             }
@@ -394,6 +390,7 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
+                            .ver(ver)
                             .build()
                     );
 
@@ -418,6 +415,7 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
+                            .ver(ver)
                             .build());
                 }
             }

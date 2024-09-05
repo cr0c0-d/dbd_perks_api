@@ -47,11 +47,14 @@ public class KillerCrawler {
      */
     private List<String> killerDocsLinkUrlList = new ArrayList<>();
 
+    // 현재 데이터의 버전정보
+    private Long ver;
 
     /**
      * 킬러 크롤러 실행
      */
-    public void runKillerCrawler() {
+    public void runKillerCrawler(Long version) {
+        ver = version;
         getKillerDocUrlList();
     }
 
@@ -63,6 +66,11 @@ public class KillerCrawler {
 
             // Jsoup 연결 - 살인마 개별 문서 목록 페이지
             Document document = Jsoup.connect(killerDocsListUrl).get();
+
+            ver = crawlerUtil.getVersion(document, "killer");
+            if(ver == 0L) {
+                return;
+            }
 
             document = crawlerUtil.removeAnnotation(document);
 
@@ -128,32 +136,9 @@ public class KillerCrawler {
                 }
                 Playable player = Playable.builder()
                         .role("killer")
+                        .ver(ver)
                         .build();
 
-                /* 방법 1 : span 찾기
-                // 프로필 영역의 span 요소만 찾기
-                Elements textElements = profileTable.select("span.jrW0Zn5O, span.jrW0Zn5O div, span.jrW0Zn5O span");
-
-
-                for(Element text : textElements) {
-                    String textStr = text.wholeOwnText();
-                    // 영어로만 이루어진 경우 - 영문명
-                    if(textStr.matches("^[a-zA-Z\s]+$")) {
-                        player.setEn_name(textStr);
-                    } else if (textStr.matches("^[가-힣\s]+$")) {
-                        // 한글로만 이루어진 경우 - 한글명
-                        player.setName(textStr);
-                    }
-
-                    // 둘 다 찾았으면 break
-                    if(player.getName() != null && player.getEn_name() != null) {
-                        break;
-                    }
-                }
-
-                 */
-
-                /* 방법 2 : cssSelector로 찾기*/
                 Elements nameSpans = profileTable.select("tbody tr td div div span strong span");
                 for(Element nameSpan : nameSpans) {
                     if(nameSpan.childrenSize() > 1) {
@@ -163,12 +148,8 @@ public class KillerCrawler {
                 }
 
                 // 한글명과 영문명 둘 다 찾은 경우
-
                 if(player.getName() != null && player.getEnName() != null) {
 
-                    // 리스트에 추가
-                    // killerList.add(player);
-                    
                     // DB에 저장
                     player = playableRepository.save(player);
                 }
@@ -211,6 +192,7 @@ public class KillerCrawler {
                 Perk perk = Perk.builder()
                         .role(killer.getRole())
                         .playableId(killer.getId())
+                        .ver(ver)
                         .build();
 
                 String imgSrc = perkElement.select("noscript img").attr("src");
@@ -249,6 +231,7 @@ public class KillerCrawler {
                     Perk perk = Perk.builder()
                             .role(killer.getRole())
                             .playableId(killer.getId())
+                            .ver(ver)
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
@@ -291,6 +274,7 @@ public class KillerCrawler {
 
         Weapon weapon = Weapon.builder()
                 .killerId(killer.getId())
+                .ver(ver)
                 .build();
 
         Element wpDiv = crawlerUtil.getContentsElement(document, "무기 & 능력");
@@ -327,6 +311,7 @@ public class KillerCrawler {
 
             Addon addon = Addon.builder()
                     .killerId(killer.getId())
+                    .ver(ver)
                     .build();
 
             for(int i = 0; i < tds.size(); i++) {
