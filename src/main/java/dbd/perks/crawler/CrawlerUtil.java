@@ -1,13 +1,23 @@
 package dbd.perks.crawler;
 
+import dbd.perks.domain.Ver;
+import dbd.perks.repository.VerRepository;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class CrawlerUtil {
+
+    private final VerRepository verRepository;
 
     /**
      * 문서 객체와 제목영역 문자열을 인수로 받아, 해당 제목에 해당하는 본문 영역 Element를 반환하는 함수
@@ -136,4 +146,41 @@ public class CrawlerUtil {
 
         return document;
     }
+
+    public LocalDateTime getLastModifiedTime(Document document) {
+        Element lastModifiedTime = document.selectFirst("div:contains(최근 수정 시각:)");
+        if(lastModifiedTime != null) {
+            Element time = lastModifiedTime.selectFirst("time");
+            if(time != null) {
+                String datetime = time.attr("datetime");
+                return LocalDateTime.parse(datetime);
+            }
+
+        }
+        return null;
+    }
+
+    public Long getVersion(Document document, String type) {
+        LocalDateTime docModifiedTime = getLastModifiedTime(document);
+
+        Optional<Ver> curVer = verRepository.findFirstByTypeOrderByVerDesc(type);
+
+        LocalDateTime curVersionTime = curVer.map(Ver::getDocUpdateTime).orElse(null);
+
+        if(curVer.isPresent() && curVersionTime.equals(docModifiedTime)) {
+
+            return null;
+
+        } else {
+
+            Ver ver = verRepository.save(Ver.builder()
+                    .type(type)
+                    .docUpdateTime(docModifiedTime)
+                    .build()
+            );
+            return ver.getVer();
+        }
+    }
+
+
 }
