@@ -62,13 +62,16 @@ public class Perk implements Data  {
         Perk perk = null;
         if(data instanceof Perk) {
             perk = (Perk) data;
-
-            return this.name.equals(perk.getName())
-                    && this.enName.equals(perk.getEnName())
-                    && this.role.equals(perk.getRole())
-                    && ((this.playableId == null && perk.getPlayableId() == null) || this.playableId.equals(perk.getPlayableId()))
-                    && this.description.equals(perk.getDescription())
-                    && this.img.equals(perk.getImg());
+            try {
+                return this.name.equals(perk.getName())
+                        && this.enName.equals(perk.getEnName())
+                        && this.role.equals(perk.getRole())
+                        && ((this.playableId == null && perk.getPlayableId() == null) || this.playableId.equals(perk.getPlayableId()))
+                        && this.description.equals(perk.getDescription())
+                        && this.img.equals(perk.getImg());
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }

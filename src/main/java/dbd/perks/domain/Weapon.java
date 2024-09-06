@@ -54,10 +54,15 @@ public class Weapon implements Data {
         if(data instanceof Weapon) {
             weapon = (Weapon) data;
 
-            return this.name.equals(weapon.getName())
-                    && this.enName.equals(weapon.getEnName())
-                    && this.killerId.equals(weapon.getKillerId())
-                    && this.img.equals(weapon.getImg());
+            try {
+                return this.name.equals(weapon.getName())
+                        && this.enName.equals(weapon.getEnName())
+                        && this.killerId.equals(weapon.getKillerId())
+                        && this.img.equals(weapon.getImg());
+
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }

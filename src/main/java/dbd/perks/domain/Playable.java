@@ -50,9 +50,14 @@ public class Playable implements Data {
         if(data instanceof Playable) {
             playable = (Playable) data;
 
-            return this.name.equals(playable.getName())
-                    && this.enName.equals(playable.getEnName())
-                    && this.role.equals(playable.getRole());
+            try {
+
+                return this.name.equals(playable.getName())
+                        && this.enName.equals(playable.getEnName())
+                        && this.role.equals(playable.getRole());
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }

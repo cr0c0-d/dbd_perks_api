@@ -62,12 +62,18 @@ public class Offering implements Data {
         if(data instanceof Offering) {
             offering = (Offering) data;
 
-            return this.name.equals(offering.getName())
-                    && this.enName.equals(offering.getEnName())
-                    && this.role.equals(offering.getRole())
-                    && this.level.equals(offering.getLevel())
-                    && this.description.equals(offering.getDescription())
-                    && this.img.equals(offering.getImg());
+            try {
+
+                return this.name.equals(offering.getName())
+                        && this.enName.equals(offering.getEnName())
+                        && this.role.equals(offering.getRole())
+                        && this.level.equals(offering.getLevel())
+                        && this.description.equals(offering.getDescription())
+                        && this.img.equals(offering.getImg());
+
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }

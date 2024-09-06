@@ -67,13 +67,18 @@ public class Item implements Data {
         if(data instanceof Item) {
             item = (Item) data;
 
-            return this.name.equals(item.getName())
-                    && this.enName.equals(item.getEnName())
-                    && this.typeName.equals(item.getTypeName())
-                    && this.typeEnName.equals(item.getTypeName())
-                    && this.level.equals(item.getLevel())
-                    && this.description.equals(item.getDescription())
-                    && this.img.equals(item.getImg());
+            try {
+                return this.name.equals(item.getName())
+                        && this.enName.equals(item.getEnName())
+                        && this.typeName.equals(item.getTypeName())
+                        && this.typeEnName.equals(item.getTypeName())
+                        && this.level.equals(item.getLevel())
+                        && this.description.equals(item.getDescription())
+                        && this.img.equals(item.getImg());
+
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }
