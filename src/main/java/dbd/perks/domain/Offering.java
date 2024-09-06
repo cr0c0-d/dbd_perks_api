@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Offering {
+public class Offering implements Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,21 +38,43 @@ public class Offering {
     @Column
     private String img;
 
-    @Column
-    private Long ver;
+    @Column(name = "is_activated", columnDefinition = "Boolean")
+    private Boolean isActivated;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Offering(String name, String enName, String level, String role, String description, String img, Long ver) {
+    public Offering(String name, String enName, String level, String role, String description, String img, Boolean isActivated) {
         this.name = name;
         this.enName = enName;
         this.level = level;
         this.role = role;
         this.description = description;
         this.img = img;
-        this.ver = ver;
+        this.isActivated = isActivated;
+    }
+
+    @Override
+    public Boolean equals(Data data) {
+        Offering offering = null;
+        if(data instanceof Offering) {
+            offering = (Offering) data;
+
+            return this.name.equals(offering.getName())
+                    && this.enName.equals(offering.getEnName())
+                    && this.role.equals(offering.getRole())
+                    && this.level.equals(offering.getLevel())
+                    && this.description.equals(offering.getDescription())
+                    && this.img.equals(offering.getImg());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        this.isActivated = false;
     }
 }

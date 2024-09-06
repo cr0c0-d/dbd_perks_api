@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Weapon {
+public class Weapon implements Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,19 +32,39 @@ public class Weapon {
     @Column(name = "killer_id")
     private Long killerId;
 
-    @Column
-    private Long ver;
+    @Column(name = "is_activated", columnDefinition = "Boolean")
+    private Boolean isActivated;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Weapon(String name, String enName, String img, Long killerId, Long ver) {
+    public Weapon(String name, String enName, String img, Long killerId, Boolean isActivated) {
         this.name = name;
         this.enName = enName;
         this.img = img;
         this.killerId = killerId;
-        this.ver = ver;
+        this.isActivated = isActivated;
+    }
+
+    @Override
+    public Boolean equals(Data data) {
+        Weapon weapon = null;
+        if(data instanceof Weapon) {
+            weapon = (Weapon) data;
+
+            return this.name.equals(weapon.getName())
+                    && this.enName.equals(weapon.getEnName())
+                    && this.killerId.equals(weapon.getKillerId())
+                    && this.img.equals(weapon.getImg());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        this.isActivated = false;
     }
 }

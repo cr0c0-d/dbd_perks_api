@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Playable {
+public class Playable implements Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,18 +29,37 @@ public class Playable {
     @Column
     private String name;
 
-    @Column
-    private Long ver;
+    @Column(name = "is_activated", columnDefinition = "Boolean")
+    private Boolean isActivated;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Playable(String role, String enName, String name, Long ver) {
+    public Playable(String role, String enName, String name, Boolean isActivated) {
         this.role = role;
         this.enName = enName;
         this.name = name;
-        this.ver = ver;
+        this.isActivated = isActivated;
+    }
+
+    @Override
+    public Boolean equals(Data data) {
+        Playable playable = null;
+        if(data instanceof Playable) {
+            playable = (Playable) data;
+
+            return this.name.equals(playable.getName())
+                    && this.enName.equals(playable.getEnName())
+                    && this.role.equals(playable.getRole());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        this.isActivated = false;
     }
 }

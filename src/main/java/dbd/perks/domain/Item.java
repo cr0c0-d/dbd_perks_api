@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Item {
+public class Item implements Data {
 
 
     @Id
@@ -42,15 +42,15 @@ public class Item {
     @Column
     private String typeEnName;
 
-    @Column
-    private Long ver;
+    @Column(name = "is_activated", columnDefinition = "Boolean")
+    private Boolean isActivated;
 
     @CreatedDate
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Item(String name, String enName, String level, String description, String img, String typeName, String typeEnName, Long ver) {
+    public Item(String name, String enName, String level, String description, String img, String typeName, String typeEnName, Boolean isActivated) {
         this.name = name;
         this.enName = enName;
         this.level = level;
@@ -58,6 +58,29 @@ public class Item {
         this.img = img;
         this.typeName = typeName;
         this.typeEnName = typeEnName;
-        this.ver = ver;
+        this.isActivated = isActivated;
+    }
+
+    @Override
+    public Boolean equals(Data data) {
+        Item item = null;
+        if(data instanceof Item) {
+            item = (Item) data;
+
+            return this.name.equals(item.getName())
+                    && this.enName.equals(item.getEnName())
+                    && this.typeName.equals(item.getTypeName())
+                    && this.typeEnName.equals(item.getTypeName())
+                    && this.level.equals(item.getLevel())
+                    && this.description.equals(item.getDescription())
+                    && this.img.equals(item.getImg());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        this.isActivated = false;
     }
 }

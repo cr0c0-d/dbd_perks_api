@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.sql.Blob;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Perk {
+public class Perk implements Data  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,21 +39,43 @@ public class Perk {
     @Column
     private String img;
 
-    @Column
-    private Long ver;
+    @Column(name = "is_activated", columnDefinition = "Boolean")
+    private Boolean isActivated;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Perk(String role, String name, String enName, Long playableId, String description, String img, Long ver) {
+    public Perk(String role, String name, String enName, Long playableId, String description, String img, Boolean isActivated) {
         this.role = role;
         this.name = name;
         this.enName = enName;
         this.playableId = playableId;
         this.description = description;
         this.img = img;
-        this.ver = ver;
+        this.isActivated = isActivated;
+    }
+
+    @Override
+    public Boolean equals(Data data) {
+        Perk perk = null;
+        if(data instanceof Perk) {
+            perk = (Perk) data;
+
+            return this.name.equals(perk.getName())
+                    && this.enName.equals(perk.getEnName())
+                    && this.role.equals(perk.getRole())
+                    && ((this.playableId == null && perk.getPlayableId() == null) || this.playableId.equals(perk.getPlayableId()))
+                    && this.description.equals(perk.getDescription())
+                    && this.img.equals(perk.getImg());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        this.isActivated = false;
     }
 }

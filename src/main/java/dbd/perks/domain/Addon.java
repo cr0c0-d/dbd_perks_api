@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Addon {
+public class Addon implements Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,15 +44,15 @@ public class Addon {
     @Column
     private String img;
 
-    @Column
-    private Long ver;
+    @Column(name = "is_activated", columnDefinition = "Boolean")
+    private Boolean isActivated;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Builder
-    public Addon(String name, String enName, String typeName, String typeEnName, String level, Long killerId, String description, String img, Long ver) {
+    public Addon(String name, String enName, String typeName, String typeEnName, String level, Long killerId, String description, String img, Boolean isActivated) {
         this.name = name;
         this.enName = enName;
         this.typeName = typeName;
@@ -61,6 +61,33 @@ public class Addon {
         this.killerId = killerId;
         this.description = description;
         this.img = img;
-        this.ver = ver;
+        this.isActivated = isActivated;
+    }
+
+    @Override
+    public Boolean equals(Data data) {
+        Addon addon = null;
+        if(data instanceof Addon) {
+            addon = (Addon) data;
+        } else {
+            return false;
+        }
+        try {
+            return this.name.equals(addon.getName())
+                    && this.enName.equals(addon.getEnName())
+                    && ((this.typeName == null && addon.getTypeName() == null) || this.typeName.equals(addon.getTypeName()))
+                    && ((this.typeEnName == null && addon.getTypeEnName() == null) || this.typeEnName.equals(addon.getTypeName()))
+                    && this.level.equals(addon.getLevel())
+                    && ((this.killerId == null && addon.getKillerId() == null) || this.killerId.equals(addon.getKillerId()))
+                    && this.description.equals(addon.getDescription())
+                    && this.img.equals(addon.getImg());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        this.isActivated = false;
     }
 }
