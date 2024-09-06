@@ -163,24 +163,20 @@ public class CrawlerUtil {
     }
 
     public Long getVersion(Document document, String type) {
+    public Long getVersion(Document document) {
         LocalDateTime docModifiedTime = getLastModifiedTime(document);
 
-        Optional<Ver> curVer = verRepository.findFirstByTypeOrderByVerDesc(type);
+        Optional<CrawledDocument> recorded = crawledDocumentRepository.findFirstByUrlOrderByVerDesc(document.baseUri());
 
-        LocalDateTime curVersionTime = curVer.map(Ver::getDocUpdateTime).orElse(null);
-
-        if(curVer.isPresent() && curVersionTime.equals(docModifiedTime)) {
-
-            return null;
-
+        // 기록된 문서버전이 없으면 1, 기록이 있고 수정시각이 서로 다르면 이전 버전+1로 insert
+        if(recorded.isEmpty() || !recorded.get().getLastModifiedTime().equals(docModifiedTime)) {
+            return crawledDocumentRepository.save(CrawledDocument.builder()
+                    .url(document.baseUri())
+                    .ver(recorded.map(crawledDocument -> crawledDocument.getVer() + 1).orElse(1L))
+                    .lastModifiedTime(docModifiedTime)
+                    .build()).getVer();
         } else {
-
-            Ver ver = verRepository.save(Ver.builder()
-                    .type(type)
-                    .docUpdateTime(docModifiedTime)
-                    .build()
-            );
-            return ver.getVer();
+            return null;
         }
     }
 
