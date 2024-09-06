@@ -153,7 +153,9 @@ public class CrawlerUtil {
             Element time = lastModifiedTime.selectFirst("time");
             if(time != null) {
                 String datetime = time.attr("datetime");
-                return LocalDateTime.parse(datetime);
+
+                OffsetDateTime offsetDateTime = OffsetDateTime.parse(datetime);
+                return offsetDateTime.toLocalDateTime();
             }
 
         }
