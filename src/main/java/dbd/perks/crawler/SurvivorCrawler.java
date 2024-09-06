@@ -71,18 +71,25 @@ public class SurvivorCrawler {
         // Selenium 연결 - 생존자(오리지널)
         Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
 
-        getSurvivorData(documentOri);
+        if(crawlerUtil.getVersion(documentOri) != null) {
+            getSurvivorData(documentOri);
+        }
+
 
         // Selenium 연결 - 생존자(라이센스)
         Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
 
-        getSurvivorData(documentLic);
-
+        if(crawlerUtil.getVersion(documentLic) != null) {
+            getSurvivorData(documentLic);
+        }
 
         // Selenium 연결 - 생존자 아이템
         Document documentItem = scrollCrawler.getDocumentByScrollCrawler(itemDocUrl);
 
-        getSurvivorItems(documentItem);
+        if(crawlerUtil.getVersion(documentItem) != null) {
+            getSurvivorItems(documentItem);
+        }
+
     }
 
     public void getSurvivorData(Document document) {
@@ -113,6 +120,7 @@ public class SurvivorCrawler {
             Playable survivor = Playable.builder()
                     .name(survName)
                     .role("survivor")
+                    .isActivated(true)
                     .build();
 
             List<Perk> perkList = null;
@@ -135,7 +143,7 @@ public class SurvivorCrawler {
             Element survNameSpan = survTable.selectFirst("strong span");
             survivor.setEnName(survNameSpan.child(0).ownText());
 
-            playableList.add(playableRepository.save(survivor));
+            playableList.add((Playable) crawlerUtil.getLatestVersion(survivor));
 
             Element perkDiv = crawlerUtil.getNextElement(document, survDiv);
 
@@ -146,7 +154,7 @@ public class SurvivorCrawler {
             perkDiv = crawlerUtil.getNextElement(document, perkDiv);
             perkList = getSurvivorPerks(perkDiv, survivor);
 
-            perkRepository.saveAll(perkList);
+            perkList.forEach(crawlerUtil::getLatestVersion);
         }
     }
 
@@ -160,6 +168,7 @@ public class SurvivorCrawler {
                 Perk perk = Perk.builder()
                         .role(player.getRole())
                         .playableId(player.getId())
+                        .isActivated(true)
                         .build();
 
                 String imgSrc = table.select("noscript img").attr("src");
@@ -190,6 +199,7 @@ public class SurvivorCrawler {
                     Perk perk = Perk.builder()
                             .role(player.getRole())
                             .playableId(player.getId())
+                            .isActivated(true)
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
@@ -286,16 +296,18 @@ public class SurvivorCrawler {
 
                     String description = tds.get(tds.size()-1).html();
 
-                    itemRepository.save(Item.builder()
-                            .name(name)
-                            .enName(enName)
-                            .level(level)
-                            .typeName(curTypeName)
-                            .typeEnName(curTypeEnName)
-                            .img(img)
-                            .description(description)
-                            .build()
-                    );
+                    Item item = Item.builder()
+                                    .name(name)
+                                    .enName(enName)
+                                    .level(level)
+                                    .typeName(curTypeName)
+                                    .typeEnName(curTypeEnName)
+                                    .img(img)
+                                    .description(description)
+                                    .isActivated(true)
+                                    .build();
+
+                    crawlerUtil.getLatestVersion(item);
 
                 }
 
@@ -315,7 +327,7 @@ public class SurvivorCrawler {
                     String level = nameElement.ownText();
                     String description = trs.get(1).selectFirst("td").html();
 
-                    itemRepository.save(Item.builder()
+                    Item item = Item.builder()
                             .name(name)
                             .enName(enName)
                             .level(level)
@@ -323,7 +335,10 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
-                            .build());
+                            .isActivated(true)
+                            .build();
+
+                    crawlerUtil.getLatestVersion(item);
                 }
             }
 
@@ -376,16 +391,18 @@ public class SurvivorCrawler {
 
                     String description = tds.get(tds.size()-1).html();
 
-                    addonRepository.save(Addon.builder()
-                            .name(name)
-                            .enName(enName)
-                            .level(level)
-                            .typeName(curTypeName)
-                            .typeEnName(curTypeEnName)
-                            .img(img)
-                            .description(description)
-                            .build()
-                    );
+                    Addon addon = Addon.builder()
+                                        .name(name)
+                                        .enName(enName)
+                                        .level(level)
+                                        .typeName(curTypeName)
+                                        .typeEnName(curTypeEnName)
+                                        .img(img)
+                                        .description(description)
+                                        .isActivated(true)
+                                        .build();
+
+                    crawlerUtil.getLatestVersion(addon);
 
                 }
 
@@ -400,15 +417,18 @@ public class SurvivorCrawler {
                     String level = nameElement.ownText();
                     String description = trs.get(1).selectFirst("td").html();
 
-                    addonRepository.save(Addon.builder()
-                            .name(name)
-                            .enName(enName)
-                            .level(level)
-                            .typeName(curTypeName)
-                            .typeEnName(curTypeEnName)
-                            .img(img)
-                            .description(description)
-                            .build());
+                    Addon addon = Addon.builder()
+                                    .name(name)
+                                    .enName(enName)
+                                    .level(level)
+                                    .typeName(curTypeName)
+                                    .typeEnName(curTypeEnName)
+                                    .img(img)
+                                    .description(description)
+                                    .isActivated(true)
+                                    .build();
+
+                    crawlerUtil.getLatestVersion(addon);
                 }
             }
 

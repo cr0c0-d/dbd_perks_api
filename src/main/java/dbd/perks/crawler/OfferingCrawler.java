@@ -49,6 +49,14 @@ public class OfferingCrawler {
 
         Document documentEn = null;
 
+        // 버전 조회
+        Long ver = crawlerUtil.getVersion(document);
+
+        // 이전 버전과 같은 경우 스킵
+        if(ver == null) {
+            return;
+        }
+
         // 주석 링크 제거
         document = crawlerUtil.removeAnnotation(document);
 
@@ -159,11 +167,12 @@ public class OfferingCrawler {
                         .level(level)
                         .img(img)
                         .description(description)
+                        .isActivated(true)
                         .build();
 
                 offering.setRole(getRole(title, offering));
 
-                offeringRepository.save(offering);
+                crawlerUtil.getLatestVersion(offering);
 
             }
 

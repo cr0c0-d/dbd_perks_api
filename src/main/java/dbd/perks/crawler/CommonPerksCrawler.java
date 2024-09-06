@@ -45,6 +45,14 @@ public class CommonPerksCrawler {
         Document document = scrollCrawler.getDocumentByScrollCrawler(perkUrl);
         document = crawlerUtil.removeAnnotation(document);
 
+        // 버전 조회
+        Long ver = crawlerUtil.getVersion(document);
+
+        // 이전 버전과 같은 경우 스킵
+        if(ver == null) {
+            return;
+        }
+
         getCommonPerks(document, "killer");
         getCommonPerks(document, "survivor");
 
@@ -83,6 +91,7 @@ public class CommonPerksCrawler {
 
                         Perk perk = Perk.builder()
                                 .role(role)
+                                .isActivated(true)
                                 .build();
 
                         String imgSrc = perkElement.select("noscript img").attr("src");
@@ -104,7 +113,7 @@ public class CommonPerksCrawler {
                         perk.setEnName(en_name);
                         perk.setDescription(description.replaceAll("\n", " "));
 
-                        perkRepository.save(perk);
+                        crawlerUtil.getLatestVersion(perk);
                     }
 
                     break;
