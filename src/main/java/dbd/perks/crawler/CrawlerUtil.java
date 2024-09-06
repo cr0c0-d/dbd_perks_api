@@ -1,23 +1,30 @@
 package dbd.perks.crawler;
 
-import dbd.perks.domain.Ver;
-import dbd.perks.repository.VerRepository;
+import dbd.perks.domain.*;
+import dbd.perks.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CrawlerUtil {
 
-    private final VerRepository verRepository;
+    private final PlayableRepository playableRepository;
+    private final PerkRepository perkRepository;
+    private final WeaponRepository weaponRepository;
+    private final AddonRepository addonRepository;
+    private final ItemRepository itemRepository;
+    private final OfferingRepository offeringRepository;
+
+    private final CrawledDocumentRepository crawledDocumentRepository;
 
     /**
      * 문서 객체와 제목영역 문자열을 인수로 받아, 해당 제목에 해당하는 본문 영역 Element를 반환하는 함수
@@ -162,7 +169,33 @@ public class CrawlerUtil {
         return null;
     }
 
-    public Long getVersion(Document document, String type) {
+    @Transactional
+    public Data getLatestVersion(Data newData) {
+        Data oldData = newData instanceof Playable ? playableRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null)
+                : newData instanceof Addon ? addonRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null)
+                : newData instanceof Item ? itemRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null)
+                : newData instanceof Offering ? offeringRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null)
+                : newData instanceof Perk ? perkRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null)
+                : newData instanceof Weapon ? weaponRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null) : null;
+
+
+        if(oldData != null) {
+            if (oldData.equals(newData)) {
+                return oldData;
+            } else {
+                oldData.deactivate();
+            }
+        }
+
+        return newData instanceof Playable ? playableRepository.save((Playable) newData)
+                : newData instanceof Addon ? addonRepository.save((Addon) newData)
+                : newData instanceof Item ? itemRepository.save((Item) newData)
+                : newData instanceof Offering ? offeringRepository.save((Offering) newData)
+                : newData instanceof Perk ? perkRepository.save((Perk) newData)
+                : newData instanceof Weapon ? weaponRepository.save((Weapon) newData)
+                : null;
+    }
+
     public Long getVersion(Document document) {
         LocalDateTime docModifiedTime = getLastModifiedTime(document);
 

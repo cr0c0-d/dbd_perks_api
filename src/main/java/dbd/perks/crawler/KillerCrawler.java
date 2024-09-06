@@ -47,9 +47,6 @@ public class KillerCrawler {
      */
     private List<String> killerDocsLinkUrlList = new ArrayList<>();
 
-    // 현재 데이터의 버전정보
-    private Long ver;
-
     /**
      * 킬러 크롤러 실행
      */
@@ -152,16 +149,24 @@ public class KillerCrawler {
                 // 한글명과 영문명 둘 다 찾은 경우
                 if(player.getName() != null && player.getEnName() != null) {
 
-                    // DB에 저장
-                    player = playableRepository.save(player);
+                    // DB에 저장된 Playable 조회
+                    player = (Playable) crawlerUtil.getLatestVersion(player);
+
+                } else {
+                    continue;
                 }
 
                 List<Perk> perks = getKillerPerks(document, player);
                 Weapon weapon = getKillerWeapon(document, player);
                 List<Addon> addons = getKillerAddons(document, player);
-                perkRepository.saveAll(perks);
-                weaponRepository.save(weapon);
-                addonRepository.saveAll(addons);
+
+                perks.forEach(crawlerUtil::getLatestVersion);
+                crawlerUtil.getLatestVersion(weapon);
+                addons.forEach(crawlerUtil::getLatestVersion);
+//
+//                perkRepository.saveAll(perks);
+//                weaponRepository.save(weapon);
+//                addonRepository.saveAll(addons);
 
             }
 
