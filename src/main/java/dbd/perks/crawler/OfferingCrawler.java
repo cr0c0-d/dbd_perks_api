@@ -37,8 +37,7 @@ public class OfferingCrawler {
     /**
      * 오퍼링 크롤러 실행
      */
-    public void runOfferingCrawler(Long version) {
-        ver = version;
+    public void runOfferingCrawler() {
         getOfferingDocument();
     }
 
@@ -160,7 +159,6 @@ public class OfferingCrawler {
                         .level(level)
                         .img(img)
                         .description(description)
-                        .ver(ver)
                         .build();
 
                 offering.setRole(getRole(title, offering));

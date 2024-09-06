@@ -34,8 +34,7 @@ public class CommonPerksCrawler {
     /**
      * 공용 기술 크롤러 실행
      */
-    public void runCommonPerksCrawler(Long version) {
-        ver = version;
+    public void runCommonPerksCrawler() {
         getCommonPerksDocument();
     }
 
@@ -84,7 +83,6 @@ public class CommonPerksCrawler {
 
                         Perk perk = Perk.builder()
                                 .role(role)
-                                .ver(ver)
                                 .build();
 
                         String imgSrc = perkElement.select("noscript img").attr("src");

@@ -53,8 +53,7 @@ public class KillerCrawler {
     /**
      * 킬러 크롤러 실행
      */
-    public void runKillerCrawler(Long version) {
-        ver = version;
+    public void runKillerCrawler() {
         getKillerDocUrlList();
     }
 

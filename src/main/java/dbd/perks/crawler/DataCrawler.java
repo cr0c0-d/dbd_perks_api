@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,33 +28,33 @@ public class DataCrawler {
     public void runCrawlerAll() {
         Ver ver = verRepository.save(new Ver());
 
-        runKillerCrawler(ver.getVer());
-        runSurvivorCrawler(ver.getVer());
-        runOfferingCrawler(ver.getVer());
-        runCommonPerksCrawler(ver.getVer());
+        runKillerCrawler();
+        runSurvivorCrawler();
+        runOfferingCrawler();
+        runCommonPerksCrawler();
 
 //        verifyData();
     }
 
-    public void runKillerCrawler(Long ver) {
+    public void runKillerCrawler() {
         KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil);
-        killerCrawler.runKillerCrawler(ver);
+        killerCrawler.runKillerCrawler();
 
     }
 
-    public void runSurvivorCrawler(Long ver) {
+    public void runSurvivorCrawler() {
         SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, itemRepository, addonRepository, crawlerUtil, scrollCrawler);
-        survivorCrawler.runSurvivorCrawler(ver);
+        survivorCrawler.runSurvivorCrawler();
     }
 
-    public void runOfferingCrawler(Long ver) {
+    public void runOfferingCrawler() {
         OfferingCrawler offeringCrawler = new OfferingCrawler(offeringRepository, crawlerUtil, scrollCrawler);
-        offeringCrawler.runOfferingCrawler(ver);
+        offeringCrawler.runOfferingCrawler();
     }
 
-    public void runCommonPerksCrawler(Long ver) {
+    public void runCommonPerksCrawler() {
         CommonPerksCrawler commonPerksCrawler = new CommonPerksCrawler(perkRepository, crawlerUtil, scrollCrawler);
-        commonPerksCrawler.runCommonPerksCrawler(ver);
+        commonPerksCrawler.runCommonPerksCrawler();
     }
 
 //    public void verifyData() {

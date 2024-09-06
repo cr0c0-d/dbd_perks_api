@@ -58,8 +58,7 @@ public class SurvivorCrawler {
     /**
      * 생존자 크롤러 실행
      */
-    public void runSurvivorCrawler(Long version) {
-        ver = version;
+    public void runSurvivorCrawler() {
         getSurvivorDocument();
     }
 
@@ -114,7 +113,6 @@ public class SurvivorCrawler {
             Playable survivor = Playable.builder()
                     .name(survName)
                     .role("survivor")
-                    .ver(ver)
                     .build();
 
             List<Perk> perkList = null;
@@ -162,7 +160,6 @@ public class SurvivorCrawler {
                 Perk perk = Perk.builder()
                         .role(player.getRole())
                         .playableId(player.getId())
-                        .ver(ver)
                         .build();
 
                 String imgSrc = table.select("noscript img").attr("src");
@@ -193,7 +190,6 @@ public class SurvivorCrawler {
                     Perk perk = Perk.builder()
                             .role(player.getRole())
                             .playableId(player.getId())
-                            .ver(ver)
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
@@ -298,7 +294,6 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
-                            .ver(ver)
                             .build()
                     );
 
@@ -328,7 +323,6 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
-                            .ver(ver)
                             .build());
                 }
             }
@@ -390,7 +384,6 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
-                            .ver(ver)
                             .build()
                     );
 
@@ -415,7 +408,6 @@ public class SurvivorCrawler {
                             .typeEnName(curTypeEnName)
                             .img(img)
                             .description(description)
-                            .ver(ver)
                             .build());
                 }
             }
