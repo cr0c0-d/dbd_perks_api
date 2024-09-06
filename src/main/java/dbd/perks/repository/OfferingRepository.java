@@ -4,9 +4,12 @@ import dbd.perks.domain.Offering;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OfferingRepository extends JpaRepository<Offering, Long> {
     List<Offering> findByRoleIn(List<String> roles);
 
-    List<Offering> findByVer(Long ver);
+    Optional<Offering> findFirstByEnNameOrderByCreatedAtDesc(String enName);
+
+    List<Offering> findByIsActivatedTrue();
 }
