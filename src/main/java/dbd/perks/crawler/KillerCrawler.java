@@ -66,11 +66,6 @@ public class KillerCrawler {
             // Jsoup 연결 - 살인마 개별 문서 목록 페이지
             Document document = Jsoup.connect(killerDocsListUrl).get();
 
-            ver = crawlerUtil.getVersion(document, "killer");
-            if(ver == 0L) {
-                return;
-            }
-
             document = crawlerUtil.removeAnnotation(document);
 
 
@@ -108,6 +103,14 @@ public class KillerCrawler {
             for(String url : killerDocsLinkUrlList) {
                 Document document = Jsoup.connect(namuWikiDomain + url).get();
 
+                // 버전 조회
+                Long ver = crawlerUtil.getVersion(document);
+
+                // 이전 버전과 같은 경우 스킵
+                if(ver == null) {
+                    continue;
+                }
+
                 // 미출시 이미지
                 Elements imgUpcoming = document.select("img[alt='DBD DLC Upcoming']");
                 if(!imgUpcoming.isEmpty()) {
@@ -135,7 +138,7 @@ public class KillerCrawler {
                 }
                 Playable player = Playable.builder()
                         .role("killer")
-                        .ver(ver)
+                        .isActivated(true)
                         .build();
 
                 Elements nameSpans = profileTable.select("tbody tr td div div span strong span");
@@ -191,7 +194,7 @@ public class KillerCrawler {
                 Perk perk = Perk.builder()
                         .role(killer.getRole())
                         .playableId(killer.getId())
-                        .ver(ver)
+                        .isActivated(true)
                         .build();
 
                 String imgSrc = perkElement.select("noscript img").attr("src");
@@ -230,7 +233,7 @@ public class KillerCrawler {
                     Perk perk = Perk.builder()
                             .role(killer.getRole())
                             .playableId(killer.getId())
-                            .ver(ver)
+                            .isActivated(true)
                             .build();
 
                     Elements spans = perkElement.select("div div div div div span");
@@ -273,7 +276,7 @@ public class KillerCrawler {
 
         Weapon weapon = Weapon.builder()
                 .killerId(killer.getId())
-                .ver(ver)
+                .isActivated(true)
                 .build();
 
         Element wpDiv = crawlerUtil.getContentsElement(document, "무기 & 능력");
@@ -310,7 +313,7 @@ public class KillerCrawler {
 
             Addon addon = Addon.builder()
                     .killerId(killer.getId())
-                    .ver(ver)
+                    .isActivated(true)
                     .build();
 
             for(int i = 0; i < tds.size(); i++) {
