@@ -19,7 +19,6 @@ public class DataCrawler {
     private final AddonRepository addonRepository;
     private final ItemRepository itemRepository;
     private final OfferingRepository offeringRepository;
-    private final VerRepository verRepository;
 
     private final CrawlerUtil crawlerUtil;
     private final ScrollCrawler scrollCrawler;
