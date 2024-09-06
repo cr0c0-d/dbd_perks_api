@@ -26,14 +26,16 @@ public class DataCrawler {
     private final EmailService emailService;
 
     public void runCrawlerAll() {
-        Ver ver = verRepository.save(new Ver());
+        Map<String, Integer> lastActivated = getActivatedDataCount();
 
         runKillerCrawler();
         runSurvivorCrawler();
         runOfferingCrawler();
         runCommonPerksCrawler();
 
-//        verifyData();
+        Map<String, Integer> curActivated = getActivatedDataCount();
+
+        verifyData(lastActivated, curActivated);
     }
 
     public void runKillerCrawler() {
@@ -57,17 +59,39 @@ public class DataCrawler {
         commonPerksCrawler.runCommonPerksCrawler();
     }
 
-//    public void verifyData() {
-//        // 현재 버전 객체
-//        Ver curVersion = verRepository.findFirstByOrderByVerDesc().get();
-//
-//        Long curVer = curVersion.getVer();
-//
-//        String emailSubject = "[크롤러 데이터 알림] " + curVersion.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " / 버전 " + curVer;
-//
-//        StringBuffer emailContents = new StringBuffer();
-//
-//        if(curVer != 1) {
+    public Map<String, Integer> getActivatedDataCount() {
+        List<Addon> addons = addonRepository.findByIsActivatedTrue();
+        List<Item> items = itemRepository.findByIsActivatedTrue();
+        List<Offering> offerings = offeringRepository.findByIsActivatedTrue();
+        List<Perk> perks = perkRepository.findByIsActivatedTrue();
+        List<Playable> playables = playableRepository.findByIsActivatedTrue();
+        List<Weapon> weapons = weaponRepository.findByIsActivatedTrue();
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("addon", addons.size());
+        map.put("item", items.size());
+        map.put("offering", offerings.size());
+        map.put("perk", perks.size());
+        map.put("playable", playables.size());
+        map.put("weapon", weapons.size());
+
+        return map;
+    }
+
+    public void verifyData(Map<String, Integer> last, Map<String, Integer> cur ) {
+
+        String emailSubject = "[크롤러 데이터 변동 알림]";
+
+        StringBuffer emailContents = new StringBuffer();
+
+        Iterator<String> it = last.keySet().iterator();
+
+        while(it.hasNext()) {
+            String data = it.next();
+            if(!Objects.equals(last.get(data), cur.get(data))) {
+                emailContents.append("[" + data + "] 이전 버전 : " + last.get(data) + "개 / 현재 버전 : " + cur.get(data) + "개 \n");
+            }
+        }
 //            /** Playable **/
 //            List<Playable> curPlayableList = playableRepository.findByVer(curVer);
 //            List<Playable> lastPlayableList = playableRepository.findByVer(curVer-1);
@@ -121,10 +145,9 @@ public class DataCrawler {
 //            if(curWeaponList.size() != lastWeaponList.size()) {
 //                emailContents.append("[Weapon] 이전 버전 : " + lastWeaponList.size() + "개 / 현재 버전 : " + curWeaponList.size() + "개 \n");
 //            }
-//        }
-//
-//        if(!emailContents.isEmpty()) {
-//            emailService.sendEmail(emailSubject, emailContents.toString());
-//        }
-//    }
+
+        if(!emailContents.isEmpty()) {
+            emailService.sendEmail(emailSubject, emailContents.toString());
+        }
+    }
 }
