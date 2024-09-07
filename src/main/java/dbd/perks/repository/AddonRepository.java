@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface AddonRepository extends JpaRepository<Addon, Long> {
 
-    List<Addon> findAllByKillerIdIsNull();
-    List<Addon> findAllByKillerIdIsNotNull();
+    List<Addon> findAllByKillerIdIsNullAndIsActivatedTrue();
+    List<Addon> findAllByKillerIdIsNotNullAndIsActivatedTrue();
 
     Optional<Addon> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 

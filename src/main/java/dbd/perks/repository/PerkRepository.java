@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PerkRepository extends JpaRepository<Perk, Long> {
-    List<Perk> findByRole(String role);
+    List<Perk> findByIsActivatedTrueAndRole(String role);
 
     Optional<Perk> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 

@@ -28,23 +28,23 @@ public class DataService {
         /***************** 생존자 *****************/
 
         // 애드온
-        List<Addon> addonList = addonRepository.findAllByKillerIdIsNull();
+        List<Addon> addonList = addonRepository.findAllByKillerIdIsNullAndIsActivatedTrue();
         List<AddonSurvivorFindResponse> addonSurvivorFindResponseList = addonList.stream().map(AddonSurvivorFindResponse::new).toList();
 
         // 아이템
-        List<Item> itemList = itemRepository.findAll();
+        List<Item> itemList = itemRepository.findByIsActivatedTrue();
         List<ItemFindResponse> itemFindResponseList = itemList.stream().map(ItemFindResponse::new).toList();
 
         // 오퍼링
-        List<Offering> offeringList = offeringRepository.findByRoleIn(Arrays.asList("survivor", "common"));
+        List<Offering> offeringList = offeringRepository.findByIsActivatedTrueAndRoleIn(Arrays.asList("survivor", "common"));
         List<OfferingFindResponse> offeringFindResponseList = offeringList.stream().map(OfferingFindResponse::new).toList();
 
         // 퍽
-        List<Perk> perkList = perkRepository.findByRole("survivor");
+        List<Perk> perkList = perkRepository.findByIsActivatedTrueAndRole("survivor");
         List<PerkFindResponse> perkFindResponseList = perkList.stream().map(perk -> new PerkFindResponse(perk, perk.getPlayableId() == null ? null : playableRepository.findById(perk.getPlayableId()).get())).toList();
 
         // 캐릭터
-        List<Playable> playableList = playableRepository.findByRole("survivor");
+        List<Playable> playableList = playableRepository.findByIsActivatedTrueAndRole("survivor");
         List<PlayableFindResponse> playableFindResponseList = playableList.stream().map(PlayableFindResponse::new).toList();
 
         return new SurvivorFindResponse(playableFindResponseList, perkFindResponseList, itemFindResponseList, addonSurvivorFindResponseList, offeringFindResponseList);
@@ -54,25 +54,25 @@ public class DataService {
         /***************** 살인마 *****************/
 
         // 애드온
-        List<Addon> addonList = addonRepository.findAllByKillerIdIsNotNull();
+        List<Addon> addonList = addonRepository.findAllByKillerIdIsNotNullAndIsActivatedTrue();
         List<AddonKillerFindResponse> addonKillerFindResponseList = addonList.stream().map(addon -> {
             return new AddonKillerFindResponse(addon, weaponRepository.findByKillerId(addon.getKillerId()));
         }).toList();
 
         // 무기
-        List<Weapon> weaponList = weaponRepository.findAll();
+        List<Weapon> weaponList = weaponRepository.findByIsActivatedTrue();
         List<WeaponFindResponse> weaponFindResponseList = weaponList.stream().map(weapon -> new WeaponFindResponse(weapon, playableRepository.findById(weapon.getKillerId()).get())).toList();
 
         // 오퍼링
-        List<Offering> offeringList = offeringRepository.findByRoleIn(Arrays.asList("killer", "common"));
+        List<Offering> offeringList = offeringRepository.findByIsActivatedTrueAndRoleIn(Arrays.asList("killer", "common"));
         List<OfferingFindResponse> offeringFindResponseList = offeringList.stream().map(OfferingFindResponse::new).toList();
 
         // 퍽
-        List<Perk> perkList = perkRepository.findByRole("killer");
+        List<Perk> perkList = perkRepository.findByIsActivatedTrueAndRole("killer");
         List<PerkFindResponse> perkFindResponseList = perkList.stream().map(perk -> new PerkFindResponse(perk, perk.getPlayableId() == null ? null : playableRepository.findById(perk.getPlayableId()).get())).toList();
 
         // 캐릭터
-        List<Playable> playableList = playableRepository.findByRole("killer");
+        List<Playable> playableList = playableRepository.findByIsActivatedTrueAndRole("killer");
         List<PlayableFindResponse> playableFindResponseList = playableList.stream().map(PlayableFindResponse::new).toList();
 
         return new KillerFindResponse(playableFindResponseList, perkFindResponseList, weaponFindResponseList, addonKillerFindResponseList, offeringFindResponseList);

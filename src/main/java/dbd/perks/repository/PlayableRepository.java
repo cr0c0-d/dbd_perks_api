@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayableRepository extends JpaRepository<Playable, Long> {
-    List<Playable> findByRole(String role);
+    List<Playable> findByIsActivatedTrueAndRole(String role);
 
     Optional<Playable> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
