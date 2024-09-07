@@ -23,4 +23,6 @@ public interface Data {
     void deactivate();
 
     String getEnName();
+
+    Boolean validate();
 }

@@ -67,4 +67,11 @@ public class Playable implements Data {
     public void deactivate() {
         this.isActivated = false;
     }
+
+    @Override
+    public Boolean validate() {
+        return this.name != null
+                && this.enName != null
+                && this.role != null;
+    }
 }

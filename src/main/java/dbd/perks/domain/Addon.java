@@ -90,4 +90,14 @@ public class Addon implements Data {
     public void deactivate() {
         this.isActivated = false;
     }
+
+    @Override
+    public Boolean validate() {
+        return this.name != null
+                && this.enName != null
+                && this.level != null
+                && ((this.typeName != null && this.typeEnName != null) || this.killerId != null)
+                && this.description != null
+                && this.img != null;
+    }
 }

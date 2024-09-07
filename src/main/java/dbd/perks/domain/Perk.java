@@ -81,4 +81,13 @@ public class Perk implements Data  {
     public void deactivate() {
         this.isActivated = false;
     }
+
+    @Override
+    public Boolean validate() {
+        return this.name != null
+                && this.enName != null
+                && this.role != null
+                && this.description != null
+                && this.img != null;
+    }
 }

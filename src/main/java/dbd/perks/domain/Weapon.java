@@ -72,4 +72,12 @@ public class Weapon implements Data {
     public void deactivate() {
         this.isActivated = false;
     }
+
+    @Override
+    public Boolean validate() {
+        return this.name != null
+                && this.enName != null
+                && this.killerId != null
+                && this.img != null;
+    }
 }
