@@ -178,13 +178,15 @@ public class CrawlerUtil {
                 : newData instanceof Perk ? perkRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null)
                 : newData instanceof Weapon ? weaponRepository.findFirstByEnNameOrderByCreatedAtDesc(newData.getEnName()).orElse(null) : null;
 
+        if (!newData.validate()) {
+            return oldData;
+        }
 
-        if(oldData != null) {
+        if (oldData != null) {
             if (oldData.equals(newData)) {
                 return oldData;
-            } else {
-                oldData.deactivate();
             }
+            oldData.deactivate();
         }
 
         return newData instanceof Playable ? playableRepository.save((Playable) newData)
