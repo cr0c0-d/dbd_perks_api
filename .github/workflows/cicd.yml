@@ -42,7 +42,6 @@ jobs:
       - name: Set artifact
         run: |
           ARTIFACT_NAME=$(ls ./build/libs | grep -E '.*\.jar$' | sed 's/-SNAPSHOT//')
-        # 하이픈을 언더스코어로 변경
           VERSION_LABEL=$(echo "${ARTIFACT_NAME}" | sed 's/-/_/g')
           echo "artifact=${VERSION_LABEL}" >> $GITHUB_ENV
 
