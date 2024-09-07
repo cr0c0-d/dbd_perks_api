@@ -50,6 +50,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: dbd-api-server
           environment_name: Dbd-api-server-env
-          version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
+          version_label: github-action-${{ steps.current-time.outputs.formattedTime }}-v1
           region: ap-northeast-2
           deployment_package: ./build/libs/${{env.artifact}}
