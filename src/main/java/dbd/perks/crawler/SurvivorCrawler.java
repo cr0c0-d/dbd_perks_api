@@ -71,7 +71,7 @@ public class SurvivorCrawler {
         // Selenium 연결 - 생존자(오리지널)
         Document documentOri = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlOri);
 
-        if(crawlerUtil.getVersion(documentOri) != null) {
+        if(crawlerUtil.getVersion(documentOri, survivorDocUrlOri) != null) {
             getSurvivorData(documentOri);
         }
 
@@ -79,14 +79,14 @@ public class SurvivorCrawler {
         // Selenium 연결 - 생존자(라이센스)
         Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
 
-        if(crawlerUtil.getVersion(documentLic) != null) {
+        if(crawlerUtil.getVersion(documentLic, survivorDocUrlLic) != null) {
             getSurvivorData(documentLic);
         }
 
         // Selenium 연결 - 생존자 아이템
         Document documentItem = scrollCrawler.getDocumentByScrollCrawler(itemDocUrl);
 
-        if(crawlerUtil.getVersion(documentItem) != null) {
+        if(crawlerUtil.getVersion(documentItem, itemDocUrl) != null) {
             getSurvivorItems(documentItem);
         }
 

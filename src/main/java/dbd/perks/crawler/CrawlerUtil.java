@@ -196,15 +196,15 @@ public class CrawlerUtil {
                 : null;
     }
 
-    public Long getVersion(Document document) {
+    public Long getVersion(Document document, String url) {
         LocalDateTime docModifiedTime = getLastModifiedTime(document);
 
-        Optional<CrawledDocument> recorded = crawledDocumentRepository.findFirstByUrlOrderByVerDesc(document.baseUri());
+        Optional<CrawledDocument> recorded = crawledDocumentRepository.findFirstByUrlOrderByVerDesc(url);
 
         // 기록된 문서버전이 없으면 1, 기록이 있고 수정시각이 서로 다르면 이전 버전+1로 insert
         if(recorded.isEmpty() || !recorded.get().getLastModifiedTime().equals(docModifiedTime)) {
             return crawledDocumentRepository.save(CrawledDocument.builder()
-                    .url(document.baseUri())
+                    .url(url)
                     .ver(recorded.map(crawledDocument -> crawledDocument.getVer() + 1).orElse(1L))
                     .lastModifiedTime(docModifiedTime)
                     .build()).getVer();

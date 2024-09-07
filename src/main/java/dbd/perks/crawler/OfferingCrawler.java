@@ -50,7 +50,7 @@ public class OfferingCrawler {
         Document documentEn = null;
 
         // 버전 조회
-        Long ver = crawlerUtil.getVersion(document);
+        Long ver = crawlerUtil.getVersion(document, offeringUrl);
 
         // 이전 버전과 같은 경우 스킵
         if(ver == null) {

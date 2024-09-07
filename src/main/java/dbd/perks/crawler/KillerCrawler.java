@@ -101,7 +101,7 @@ public class KillerCrawler {
                 Document document = Jsoup.connect(namuWikiDomain + url).get();
 
                 // 버전 조회
-                Long ver = crawlerUtil.getVersion(document);
+                Long ver = crawlerUtil.getVersion(document, namuWikiDomain + url);
 
                 // 이전 버전과 같은 경우 스킵
                 if(ver == null) {

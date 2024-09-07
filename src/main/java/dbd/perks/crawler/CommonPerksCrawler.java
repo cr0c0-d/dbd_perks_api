@@ -46,7 +46,7 @@ public class CommonPerksCrawler {
         document = crawlerUtil.removeAnnotation(document);
 
         // 버전 조회
-        Long ver = crawlerUtil.getVersion(document);
+        Long ver = crawlerUtil.getVersion(document, perkUrl);
 
         // 이전 버전과 같은 경우 스킵
         if(ver == null) {
