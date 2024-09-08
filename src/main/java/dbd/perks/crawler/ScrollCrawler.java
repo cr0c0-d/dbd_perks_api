@@ -21,11 +21,9 @@ public class ScrollCrawler {
         if(os.contains("win")) {
             System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
         } else {
-            // 현재 프로젝트 경로 가져오기
-            String projectPath = System.getProperty("user.dir");
 
             // ChromeDriver 경로 설정
-            String driverPath = Paths.get(projectPath, "driver", "chromedriver").toString();
+            String driverPath = Paths.get("/home/chromedriver-linux64/chromedriver").toString();
             System.setProperty("webdriver.chrome.driver", driverPath);
 
             // 사용자 인터페이스 없이 백그라운드에서 실행
