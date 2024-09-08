@@ -8,6 +8,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
@@ -16,7 +17,7 @@ import java.nio.file.Paths;
 public class ScrollCrawler {
     public Document getDocumentByScrollCrawler(String url) {
         String os = System.getProperty("os.name").toLowerCase();
-
+        ChromeOptions options = new ChromeOptions();
         if(os.contains("win")) {
             System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
         } else {
@@ -26,9 +27,19 @@ public class ScrollCrawler {
             // ChromeDriver 경로 설정
             String driverPath = Paths.get(projectPath, "driver", "chromedriver").toString();
             System.setProperty("webdriver.chrome.driver", driverPath);
+
+            // 사용자 인터페이스 없이 백그라운드에서 실행
+            options.addArguments("--headless");
+
+            // 샌드박스 기능 비활성화
+            options.addArguments("--no-sandbox");
+
+            // 공유메모리 사용 비활성화
+            options.addArguments("--disable-dev-shm-usage");
+
         }
 
-        WebDriver driver = new ChromeDriver();
+        WebDriver driver = new ChromeDriver(options);
 
         driver.get(url);
 
