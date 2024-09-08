@@ -1,5 +1,6 @@
 package dbd.perks.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -8,14 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
-//
-//    @Value("${dbd.perk.api.allowed}")
-//    private String allowed;
+
+    @Value("${dbd.perk.api.allowed}")
+    private String allowed;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://dbd-random-perks-kr.netlify.app/")
+                .allowedOrigins("https://dbd-random-perks-kr.netlify.app/", allowed)
                 .allowCredentials(true)
                 .allowedHeaders("Authorization")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE");
