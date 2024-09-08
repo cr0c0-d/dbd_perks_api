@@ -10,10 +10,24 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Paths;
+
 @Service
 public class ScrollCrawler {
     public Document getDocumentByScrollCrawler(String url) {
-        System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if(os.contains("win")) {
+            System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
+        } else {
+            // 현재 프로젝트 경로 가져오기
+            String projectPath = System.getProperty("user.dir");
+
+            // ChromeDriver 경로 설정
+            String driverPath = Paths.get(projectPath, "driver", "chromedriver").toString();
+            System.setProperty("webdriver.chrome.driver", driverPath);
+        }
+
         WebDriver driver = new ChromeDriver();
 
         driver.get(url);
