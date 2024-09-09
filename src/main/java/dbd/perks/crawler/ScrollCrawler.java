@@ -42,7 +42,7 @@ public class ScrollCrawler {
         driver.get(url);
 
         try {
-            Thread.sleep(10000); // 로딩 대기
+            Thread.sleep(5000); // 로딩 대기
             // 스크롤 내리기
             JavascriptExecutor js = (JavascriptExecutor) driver;
             for (int i = 0; i < 2; i++) { //  반복
