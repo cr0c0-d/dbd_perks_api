@@ -41,15 +41,16 @@ public class ScrollCrawler {
 
         driver.get(url);
 
-        // 스크롤 내리기
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        for (int i = 0; i < 2; i++) { //  반복
-            js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-            try {
+        try {
+            Thread.sleep(10000); // 로딩 대기
+            // 스크롤 내리기
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            for (int i = 0; i < 2; i++) { //  반복
+                js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
                 Thread.sleep(2000); // 로딩 대기
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+        }catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         // 페이지의 HTML 소스 가져오기
