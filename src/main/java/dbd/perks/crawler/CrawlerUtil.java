@@ -165,6 +165,10 @@ public class CrawlerUtil {
                 return offsetDateTime.toLocalDateTime();
             }
 
+        } else {
+            System.out.println("******************************* 최근 수정 시각 찾을 수 없음 ************************************");
+            System.out.println(document);
+            System.out.println("******************************* 최근 수정 시각 찾을 수 없음 ************************************");
         }
         return null;
     }
@@ -200,6 +204,11 @@ public class CrawlerUtil {
 
     public Long getVersion(Document document, String url) {
         LocalDateTime docModifiedTime = getLastModifiedTime(document);
+
+        // 문서 수정시각을 불러올 수 없으면 null 리턴
+        if(docModifiedTime == null ) {
+            return null;
+        }
 
         Optional<CrawledDocument> recorded = crawledDocumentRepository.findFirstByUrlOrderByVerDesc(url);
 
