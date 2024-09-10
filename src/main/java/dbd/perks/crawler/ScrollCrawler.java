@@ -3,10 +3,7 @@ package dbd.perks.crawler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -55,7 +52,16 @@ public class ScrollCrawler {
         driver.get(url);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(url.contains("namu.wiki") ? "app" : "content")));
+
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(url.contains("namu.wiki") ? "app" : "content")));
+        } catch (TimeoutException e) {
+            System.out.println("*********** 시간 초과, 이하 document 내용 ************");
+            System.out.println(driver.getPageSource());
+            System.out.println("*********** 시간 초과, document 내용 끝 ************");
+
+            e.printStackTrace();
+        }
 
         try {
             // 스크롤 내리기
