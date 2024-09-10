@@ -9,9 +9,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
+import java.time.Duration;
 
 @Service
 public class ScrollCrawler {
@@ -35,21 +38,33 @@ public class ScrollCrawler {
             // 공유메모리 사용 비활성화
             options.addArguments("--disable-dev-shm-usage");
 
+            // javascript 활성화
+            options.addArguments("--enable-javascript");
+
+            // 자동화 감지 회피
+            options.addArguments("--disable-blink-features=AutomationControlled");
+
+            // User-Agent 지정으로 봇 인식 회피
+            options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+
         }
 
         WebDriver driver = new ChromeDriver(options);
 
         driver.get(url);
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(url.contains("namu.wiki") ? "app" : "content")));
+
         try {
-            Thread.sleep(5000); // 로딩 대기
             // 스크롤 내리기
             JavascriptExecutor js = (JavascriptExecutor) driver;
             for (int i = 0; i < 2; i++) { //  반복
                 js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
                 Thread.sleep(2000); // 로딩 대기
             }
-        }catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
