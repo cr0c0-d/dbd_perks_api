@@ -23,7 +23,7 @@ public class ScrollCrawler {
         } else {
 
             // ChromeDriver 경로 설정
-            String driverPath = Paths.get("/home/chromedriver-linux64/chromedriver").toString();
+            String driverPath = Paths.get("/home/ec2-user/chromedriver-linux64/chromedriver").toString();
             System.setProperty("webdriver.chrome.driver", driverPath);
 
             // 사용자 인터페이스 없이 백그라운드에서 실행
