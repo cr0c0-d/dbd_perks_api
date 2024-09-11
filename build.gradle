@@ -47,12 +47,7 @@ test {
 
 jar {
     enabled = false;
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDir '.ebextensions'
-        }
+    from('.ebextensions') {
+        into('.ebextensions') // JAR의 루트에 .ebextensions 폴더 포함
     }
 }
