@@ -48,3 +48,11 @@ test {
 jar {
     enabled = false;
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDir '.ebextensions'
+        }
+    }
+}
