@@ -32,16 +32,16 @@ spring:
 
   datasource:
 
-#    # 로컬
-#     url: ENC(o3Unotj5/WY6nMKd176hfPrztKc1arUjc9tdrenbhrdSanqYjKxYsTiCxRPlDx5CiZ1uLkQhUHg=)
-#     username: ENC(VqzHQ2Z6+nLyiGgp9azjFWk75xOKFAzs)
-#     password: ENC(6ILLmDxTQ4pnM7kLwLas814vxY+KKeFpul/w9Y7RO+U=)
-#     sql-script-encoding: utf-8
+    # 로컬
+     url: ENC(o3Unotj5/WY6nMKd176hfPrztKc1arUjc9tdrenbhrdSanqYjKxYsTiCxRPlDx5CiZ1uLkQhUHg=)
+     username: ENC(VqzHQ2Z6+nLyiGgp9azjFWk75xOKFAzs)
+     password: ENC(6ILLmDxTQ4pnM7kLwLas814vxY+KKeFpul/w9Y7RO+U=)
+     sql-script-encoding: utf-8
 
-  # aws rds
-    url : ENC(l5CRba7jtHDfdLP7m6iWX2ytyl3+ZFB1GYps0MO/dB0j/A65Z91wHK7WZcq1GCtpp1XNMD+sOqVME+lnFvheYYVgJNEqyfwgtkespNcf2YvlrofMPvl+OmqnPkxxgfUsF79QujF91ldhw+Xo/YDsX0UL5jYp/4gh6v86pyy9PCofJV8cXDzQzMtBKHoGBOZK)
-    username : ENC(Njhov6SOzmViZjnldBfU4zwmzZvA3KI8)
-    password: ENC(e9z4Opl0Un7fY9YllQlNLBolJHdQK6j2tu/IVElxlB5eKOne36Duzw==)
-    sql-script-encoding: utf-8
+#  # aws rds
+#    url : ENC(l5CRba7jtHDfdLP7m6iWX2ytyl3+ZFB1GYps0MO/dB0j/A65Z91wHK7WZcq1GCtpp1XNMD+sOqVME+lnFvheYYVgJNEqyfwgtkespNcf2YvlrofMPvl+OmqnPkxxgfUsF79QujF91ldhw+Xo/YDsX0UL5jYp/4gh6v86pyy9PCofJV8cXDzQzMtBKHoGBOZK)
+#    username : ENC(Njhov6SOzmViZjnldBfU4zwmzZvA3KI8)
+#    password: ENC(e9z4Opl0Un7fY9YllQlNLBolJHdQK6j2tu/IVElxlB5eKOne36Duzw==)
+#    sql-script-encoding: utf-8
 
 
