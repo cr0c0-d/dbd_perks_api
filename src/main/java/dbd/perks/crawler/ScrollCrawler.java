@@ -26,26 +26,28 @@ public class ScrollCrawler {
             String driverPath = Paths.get("/home/chromedriver-linux64/chromedriver").toString();
             System.setProperty("webdriver.chrome.driver", driverPath);
 
-            // 사용자 인터페이스 없이 백그라운드에서 실행
-            options.addArguments("--headless");
-
-            // 샌드박스 기능 비활성화
-            options.addArguments("--no-sandbox");
-
-            // 공유메모리 사용 비활성화
-            options.addArguments("--disable-dev-shm-usage");
-
-            // javascript 활성화
-            options.addArguments("--enable-javascript");
-
-            // 자동화 감지 회피
-            options.addArguments("--disable-blink-features=AutomationControlled");
-
-            // User-Agent 지정으로 봇 인식 회피
-            options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-
-
         }
+
+
+        // 사용자 인터페이스 없이 백그라운드에서 실행
+        options.addArguments("--headless");
+
+        // 샌드박스 기능 비활성화
+        options.addArguments("--no-sandbox");
+
+        // 공유메모리 사용 비활성화
+        options.addArguments("--disable-dev-shm-usage");
+
+        // javascript 활성화
+        options.addArguments("--enable-javascript");
+
+        // 자동화 감지 회피
+        options.addArguments("--disable-blink-features=AutomationControlled");
+
+        // User-Agent 지정으로 봇 인식 회피
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+
 
         WebDriver driver = new ChromeDriver(options);
 
