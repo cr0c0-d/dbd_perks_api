@@ -12,4 +12,6 @@ public interface PlayableRepository extends JpaRepository<Playable, Long> {
     Optional<Playable> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
     List<Playable> findByIsActivatedTrue();
+
+    void deleteByIsActivatedFalse();
 }

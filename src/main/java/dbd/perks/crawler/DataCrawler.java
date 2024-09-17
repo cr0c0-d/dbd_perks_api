@@ -3,6 +3,7 @@ package dbd.perks.crawler;
 import dbd.perks.domain.*;
 import dbd.perks.repository.*;
 import dbd.perks.service.EmailService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class DataCrawler {
     private final EmailService emailService;
 
     @Async
+    @Transactional
     public void runCrawlerAll() {
         Map<String, Integer> lastActivated = getActivatedDataCount();
 
@@ -83,6 +85,7 @@ public class DataCrawler {
         return map;
     }
 
+    @Transactional
     public void verifyData(Map<String, Integer> last, Map<String, Integer> cur ) {
 
         String emailSubject = "[크롤러 데이터 변동 알림]";
@@ -153,6 +156,13 @@ public class DataCrawler {
 
         if(!emailContents.isEmpty()) {
             emailService.sendEmail(emailSubject, emailContents.toString());
+        } else {
+            playableRepository.deleteByIsActivatedFalse();
+            addonRepository.deleteByIsActivatedFalse();
+            itemRepository.deleteByIsActivatedFalse();
+            offeringRepository.deleteByIsActivatedFalse();
+            perkRepository.deleteByIsActivatedFalse();
+            weaponRepository.deleteByIsActivatedFalse();
         }
     }
 }

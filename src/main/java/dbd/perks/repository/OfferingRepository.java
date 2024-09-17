@@ -12,4 +12,6 @@ public interface OfferingRepository extends JpaRepository<Offering, Long> {
     Optional<Offering> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
     List<Offering> findByIsActivatedTrue();
+
+    void deleteByIsActivatedFalse();
 }

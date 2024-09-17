@@ -10,4 +10,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<Item> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
     List<Item> findByIsActivatedTrue();
+
+    void deleteByIsActivatedFalse();
 }

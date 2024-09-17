@@ -12,4 +12,6 @@ public interface PerkRepository extends JpaRepository<Perk, Long> {
     Optional<Perk> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
     List<Perk> findByIsActivatedTrue();
+
+    void deleteByIsActivatedFalse();
 }

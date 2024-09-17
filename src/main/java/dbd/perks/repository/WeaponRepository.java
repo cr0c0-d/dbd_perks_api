@@ -12,4 +12,6 @@ public interface WeaponRepository extends JpaRepository<Weapon, Long> {
     Optional<Weapon> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
     List<Weapon> findByIsActivatedTrue();
+
+    void deleteByIsActivatedFalse();
 }

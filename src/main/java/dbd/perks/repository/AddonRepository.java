@@ -14,4 +14,6 @@ public interface AddonRepository extends JpaRepository<Addon, Long> {
     Optional<Addon> findFirstByEnNameOrderByCreatedAtDesc(String enName);
 
     List<Addon> findByIsActivatedTrue();
+
+    void deleteByIsActivatedFalse();
 }
