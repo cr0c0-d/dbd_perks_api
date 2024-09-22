@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class ScrollCrawler {
@@ -47,6 +49,10 @@ public class ScrollCrawler {
         // User-Agent 지정으로 봇 인식 회피
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
+        // 리소스 로딩 비활성화
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.managed_default_content_settings.images", 2);
+        options.setExperimentalOption("prefs", prefs);
 
 
         WebDriver driver = new ChromeDriver(options);
