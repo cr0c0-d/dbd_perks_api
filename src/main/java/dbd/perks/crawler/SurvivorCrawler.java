@@ -74,7 +74,7 @@ public class SurvivorCrawler {
         if(crawlerUtil.getVersion(documentOri, survivorDocUrlOri) != null) {
             getSurvivorData(documentOri);
         }
-
+        documentOri = null;
 
         // Selenium 연결 - 생존자(라이센스)
         Document documentLic = scrollCrawler.getDocumentByScrollCrawler(survivorDocUrlLic);
@@ -82,6 +82,7 @@ public class SurvivorCrawler {
         if(crawlerUtil.getVersion(documentLic, survivorDocUrlLic) != null) {
             getSurvivorData(documentLic);
         }
+        documentLic = null;
 
         // Selenium 연결 - 생존자 아이템
         Document documentItem = scrollCrawler.getDocumentByScrollCrawler(itemDocUrl);
@@ -89,6 +90,7 @@ public class SurvivorCrawler {
         if(crawlerUtil.getVersion(documentItem, itemDocUrl) != null) {
             getSurvivorItems(documentItem);
         }
+        documentItem = null;
 
     }
 
@@ -207,7 +209,11 @@ public class SurvivorCrawler {
                     String imgSrc = spans.select("noscript img").attr("src");
 
                     // 한글명
-                    String name = spans.select("span strong").get(0).ownText();
+                    Elements nameSpans = spans.select("span strong");
+                    if(nameSpans.isEmpty()) {
+                        continue;
+                    }
+                    String name = nameSpans.get(0).ownText();
 
                     // 영문명
                     String en_name = spans.select("span strong").get(1).ownText();
