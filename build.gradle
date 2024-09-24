@@ -54,9 +54,3 @@ test {
 tasks.named("jar") {
     enabled=false
 }
-
-bootJar {
-    from('.ebextensions') {
-        into('.ebextensions') // JAR의 루트에 .ebextensions 폴더 포함
-    }
-}
