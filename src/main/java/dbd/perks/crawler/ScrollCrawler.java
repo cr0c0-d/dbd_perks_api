@@ -53,7 +53,7 @@ public class ScrollCrawler {
 
         driver.get(url);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds((int) (Math.random()*1000)));
 
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(url.contains("namu.wiki") ? "app" : "content")));
