@@ -41,26 +41,22 @@ public class DataCrawler {
         verifyData(lastActivated, curActivated);
     }
 
-    @Async
     public void runKillerCrawler() {
         KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil);
         killerCrawler.runKillerCrawler();
 
     }
 
-    @Async
     public void runSurvivorCrawler() {
         SurvivorCrawler survivorCrawler = new SurvivorCrawler(playableRepository, perkRepository, itemRepository, addonRepository, crawlerUtil, scrollCrawler);
         survivorCrawler.runSurvivorCrawler();
     }
 
-    @Async
     public void runOfferingCrawler() {
         OfferingCrawler offeringCrawler = new OfferingCrawler(offeringRepository, crawlerUtil, scrollCrawler);
         offeringCrawler.runOfferingCrawler();
     }
 
-    @Async
     public void runCommonPerksCrawler() {
         CommonPerksCrawler commonPerksCrawler = new CommonPerksCrawler(perkRepository, crawlerUtil, scrollCrawler);
         commonPerksCrawler.runCommonPerksCrawler();
