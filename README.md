@@ -70,6 +70,8 @@ https://dbd-random-perks-kr.netlify.app/
 크롤링 수행 후 기존 데이터 개수에 변동이 생길 경우, Spring Boot Starter Mail을 사용해 지정한 메일 주소로 데이터 변동 알림 메일을 발송합니다. 
 이를 통해 개발자가 즉시 변동 사항을 인지할 수 있습니다.
 
+<br />
+
 ## 기술 스택
 
 - ![java]
@@ -94,11 +96,16 @@ https://dbd-random-perks-kr.netlify.app/
 - 한글 정보는 '나무위키'에서, 영문 정보는 'Dead By Daylight Fandom Wiki'에서 크롤링 수행
 - '나무위키' 페이지의 마지막 수정일 확인 후, 데이터베이스에 저장된 마지막 크롤링 시의 문서 수정일자와 다를 경우 크롤링 수행
 
+<br />
+
 ## API 제공
 - 프론트엔드에서 요청 시 데이터 응답
 
+<br />
+
 ## 데이터 변동 알림
 - 크롤링 전후 데이터 개수를 비교하여 변동사항 존재시 메일 알림
+
 
 <br />
 
@@ -111,37 +118,15 @@ https://dbd-random-perks-kr.netlify.app/
 
 <!--Url for Badges-->
 
-<!-- 프론트엔드 레포지토리 정보 배지 -->
-
-[front-repository-size-shield]: https://img.shields.io/github/repo-size/cr0c0-d/onulmohaji_f?labelColor=D8D8D8&color=BE81F7
-[front-repository-commit-activity]: https://img.shields.io/github/commit-activity/t/cr0c0-d/onulmohaji_f
-
 <!-- 백엔드 레포지토리 정보 배지 -->
 
-[back-repository-size-shield]: https://img.shields.io/github/repo-size/cr0c0-d/onulmohaji?labelColor=D8D8D8&color=BE81F7
-[back-repository-commit-activity]: https://img.shields.io/github/commit-activity/t/cr0c0-d/onulmohaji
-
-<!-- 데모 사이트 -->
-
-[readme-eng-shield]: https://img.shields.io/badge/-readme%20in%20english-2E2E2E?style=for-the-badge
-[view-demo-shield]: https://img.shields.io/badge/-%F0%9F%98%8E%20view%20demo-F3F781?style=for-the-badge
-[view-demo-url]: https://cr0c0-d.github.io
-[report-bug-shield]: https://img.shields.io/badge/-%F0%9F%90%9E%20report%20bug-F5A9A9?style=for-the-badge
-[report-bug-url]: https://github.com/cr0c0-d/onulmohaji_f/issues
-[view-demo-eatingbookscroco]: https://img.shields.io/badge/%F0%9F%92%BB%20%EB%8D%B0%EB%AA%A8%20%EC%82%AC%EC%9D%B4%ED%8A%B8%20%EB%B3%B4%EB%9F%AC%EA%B0%80%EA%B8%B0-skyblue?style=for-the-badge
-[demo-url-eatingbookscroco]: https://eatingbooks.dandycr0c0.site/search
-
-<!--Url for Buttons-->
-
-[request-front-github-page]: https://img.shields.io/badge/%F0%9F%93%83%20%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C%20GitHub%20%ED%8E%98%EC%9D%B4%EC%A7%80-A9D0F5?style=for-the-badge
-[request-back-github-page]: https://img.shields.io/badge/%F0%9F%93%83%20%EB%B0%B1%EC%97%94%EB%93%9C%20GitHub%20%ED%8E%98%EC%9D%B4%EC%A7%80-D6C7ED?style=for-the-badge
-[front-github-page-url]: https://github.com/cr0c0-d/onulmohaji_f
-[back-github-page-url]: https://github.com/cr0c0-d/onulmohaji
+[back-repository-size-shield]: https://img.shields.io/github/repo-size/cr0c0-d/dbd_perks_api?labelColor=D8D8D8&color=BE81F7
+[back-repository-commit-activity]: https://img.shields.io/github/commit-activity/t/cr0c0-d/dbd_perks_api
 
 <!-- 기술 스택 배지 -->
 
 [java]: https://img.shields.io/badge/Java-17-blue
-[spring-boot]: https://img.shields.io/badge/Spring%20Boot-3.0.4-blue
+[spring-boot]: https://img.shields.io/badge/Spring%20Boot-3.2.5-blue
 [spring-data-jpa]: https://img.shields.io/badge/Spring%20Data%20JPA-3.2.5-blue
 [jsoup]: https://img.shields.io/badge/Jsoup-1.17.2-blue
 [selenium]: https://img.shields.io/badge/Selenium-4.24.0-blue
