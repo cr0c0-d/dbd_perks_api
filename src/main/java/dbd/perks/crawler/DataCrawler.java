@@ -5,10 +5,10 @@ import dbd.perks.repository.*;
 import dbd.perks.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -42,7 +42,7 @@ public class DataCrawler {
     }
 
     public void runKillerCrawler() {
-        KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil);
+        KillerCrawler killerCrawler = new KillerCrawler(playableRepository, perkRepository, weaponRepository, addonRepository, crawlerUtil, scrollCrawler);
         killerCrawler.runKillerCrawler();
 
     }
