@@ -1,8 +1,8 @@
 package dbd.perks.crawler;
 
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,14 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ScrollCrawler {
 
-    @Value("${proxy.server}")
-    private String proxyServer;
+    @Value("${proxy.server.url}")
+    private String proxyServerUrl;
 
     public Document getDocumentByScrollCrawler(String url) {
         String os = System.getProperty("os.name").toLowerCase();
@@ -55,7 +54,9 @@ public class ScrollCrawler {
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
         // 프록시 서버 추가
-        options.addArguments("--proxy-server=" + proxyServer);
+        Proxy proxy = new Proxy();
+        proxy.setHttpProxy(proxyServerUrl);
+        options.setProxy(proxy);
 
         WebDriver driver = new ChromeDriver(options);
 
@@ -100,3 +101,5 @@ public class ScrollCrawler {
 //        driver.quit();
     }
 }
+
+
