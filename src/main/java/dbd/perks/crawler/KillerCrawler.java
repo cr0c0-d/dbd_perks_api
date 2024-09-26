@@ -31,6 +31,7 @@ public class KillerCrawler {
     private final AddonRepository addonRepository;
 
     private final CrawlerUtil crawlerUtil;
+    private final ScrollCrawler scrollCrawler;
 
     /**
      * 나무위키 도메인
@@ -58,10 +59,11 @@ public class KillerCrawler {
      * 킬러 개별 문서의 url 주소를 조회하는 함수
      */
     public void getKillerDocUrlList() {
-        try {
+//        try {
 
             // Jsoup 연결 - 살인마 개별 문서 목록 페이지
-            Document document = Jsoup.connect(killerDocsListUrl).get();
+            //Document document = Jsoup.connect(killerDocsListUrl).get();
+            Document document = scrollCrawler.getDocumentByScrollCrawler(killerDocsListUrl);
 
             document = crawlerUtil.removeAnnotation(document);
 
@@ -76,9 +78,9 @@ public class KillerCrawler {
             filteredDivList.stream().forEach(element -> element.children().select("li").forEach(li -> killerDocsLinkUrlList.add(li.select("a").attr("href"))));
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // 살인마 문서 url 목록이 비어 있지 않을 경우 다음 단계로
         if(!killerDocsLinkUrlList.isEmpty()) {
@@ -95,10 +97,11 @@ public class KillerCrawler {
             return;
         }
 
-        try {
+//        try {
 
             for(String url : killerDocsLinkUrlList) {
-                Document document = Jsoup.connect(namuWikiDomain + url).get();
+                //Document document = Jsoup.connect(namuWikiDomain + url).get();
+                Document document = scrollCrawler.getDocumentByScrollCrawler(namuWikiDomain + url);
 
                 // 버전 조회
                 Long ver = crawlerUtil.getVersion(document, namuWikiDomain + url);
@@ -170,9 +173,9 @@ public class KillerCrawler {
 
             }
 
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }
 
 
 
