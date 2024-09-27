@@ -3,12 +3,6 @@ logging:
     root: INFO
     jasypt: INFO
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
 spring:
   mail:
     host: ENC(6B9bOsefAcZwEZbS9+fKp10QOeMeYVr+ribq06cEzRE=)
