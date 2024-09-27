@@ -104,13 +104,16 @@ public class ScrollCrawler {
                 // JSoup으로 HTML 파싱
                 Document doc = Jsoup.parse(pageSource);
 
-                if((url.contains("namu.wiki") && doc.getElementById("app") != null) || doc.getElementById("content") != null) {
-
-
-
-                    return doc;
-                }
                 driver.quit();
+
+                if((url.contains("namu.wiki") && doc.getElementById("app") != null) || doc.getElementById("content") != null) {
+                    return doc;
+                } else {
+                    System.out.println("*********** 내용 찾을 수 없음, 이하 document 내용 ************");
+                    System.out.println(driver.getPageSource());
+                    System.out.println("*********** 내용 찾을 수 없음, document 내용 끝 ************");
+                }
+
 
             } catch (Exception e) {
                 System.out.println("*********** 시간 초과, 이하 document 내용 ************");
