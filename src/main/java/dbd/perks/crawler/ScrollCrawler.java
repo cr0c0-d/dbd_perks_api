@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +22,19 @@ public class ScrollCrawler {
     @Value("${proxy.server.url}")
     private String proxyServerUrl;
 
+    private final ProxyCrawler proxyCrawler;
+
     public Document getDocumentByScrollCrawler(String url) {
+        // 프록시 서버 Url 리스트
+        List<String> proxyServerUrlList = proxyCrawler.getProxyServerUrlList();
+
         String os = System.getProperty("os.name").toLowerCase();
+
         ChromeOptions options = new ChromeOptions();
-        if(os.contains("win")) {
+
+        WebDriver driver = null;
+
+        if (os.contains("win")) {
             System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
         } else {
 
@@ -53,52 +63,65 @@ public class ScrollCrawler {
         // User-Agent 지정으로 봇 인식 회피
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-        // 프록시 서버 추가
-        Proxy proxy = new Proxy();
-        proxy.setHttpProxy(proxyServerUrl);
-        options.setProxy(proxy);
+        // 인증서 무시
+        options.addArguments("--ignore-certificate-errors");
 
-        WebDriver driver = new ChromeDriver(options);
+        
+        for(String proxyServerUrl : proxyServerUrlList) {
 
-        driver.get(url);
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds((int) (Math.random()*1000)));
-
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(url.contains("namu.wiki") ? "app" : "content")));
-        } catch (TimeoutException e) {
-            System.out.println("*********** 시간 초과, 이하 document 내용 ************");
-            System.out.println(driver.getPageSource());
-            System.out.println("*********** 시간 초과, document 내용 끝 ************");
-
-            e.printStackTrace();
-        }
-
-        try {
-            // 스크롤 내리기
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-            for (int i = 0; i < 2; i++) { //  반복
-                js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-                Thread.sleep(2000); // 로딩 대기
+            // 프록시 서버 추가
+            Proxy proxy = new Proxy();
+            if(proxyServerUrl.startsWith("https:")) {
+                proxy.setSslProxy(proxyServerUrl);
+            } else {
+                proxy.setHttpProxy(proxyServerUrl);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+            options.setProxy(proxy);
+
+            driver = new ChromeDriver(options);
+
+            try {
+                driver.get(url);
+
+//            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds((int) (Math.random() * 1000)));
+//
+//            try {
+//                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(url.contains("namu.wiki") ? "app" : "content")));
+
+
+                // 스크롤 내리기
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                for (int i = 0; i < 2; i++) { //  반복
+                    js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+                    Thread.sleep(2000); // 로딩 대기
+                }
+
+
+                // 페이지의 HTML 소스 가져오기
+                String pageSource = driver.getPageSource();
+
+                // JSoup으로 HTML 파싱
+                Document doc = Jsoup.parse(pageSource);
+
+                if((url.contains("namu.wiki") && doc.getElementById("app") != null) || doc.getElementById("content") != null) {
+
+
+
+                    return doc;
+                }
+                driver.quit();
+
+            } catch (Exception e) {
+                System.out.println("*********** 시간 초과, 이하 document 내용 ************");
+                System.out.println(driver.getPageSource());
+                System.out.println("*********** 시간 초과, document 내용 끝 ************");
+
+                e.printStackTrace();
+                driver.quit();
+            }
         }
-
-        // 페이지의 HTML 소스 가져오기
-        String pageSource = driver.getPageSource();
-
-        // JSoup으로 HTML 파싱
-        Document doc = Jsoup.parse(pageSource);
-
-        driver.quit();
-
-        return doc;
-//        Element contents = doc.selectFirst("hr").parent(); // 선택자에 맞는 첫 번째 요소 선택
-//
-//        System.out.println(contents);
-//
-//        driver.quit();
+        return null;
     }
 }
 
