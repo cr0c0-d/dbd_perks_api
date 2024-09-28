@@ -110,7 +110,7 @@ public class ScrollCrawler {
                     return doc;
                 } else {
                     System.out.println("*********** 내용 찾을 수 없음, 이하 document 내용 ************");
-                    System.out.println(driver.getPageSource());
+                    System.out.println(doc.text());
                     System.out.println("*********** 내용 찾을 수 없음, document 내용 끝 ************");
                 }
 
