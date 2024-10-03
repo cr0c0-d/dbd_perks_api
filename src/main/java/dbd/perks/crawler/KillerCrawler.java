@@ -248,6 +248,11 @@ public class KillerCrawler {
                     // 이미지 경로
                     String imgSrc = spans.select("noscript img").attr("src");
 
+                    // 241003 임시 - 기사 문서 오류로 퍽 두개밖에 없음
+                    if(spans.select("span strong").isEmpty()) {
+                        continue;
+                    }
+
                     // 한글명
                     String name = spans.select("span strong").get(0).ownText();
 
