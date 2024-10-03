@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+
+<div layout:fragment="content">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">아이템</h1>
+    <p class="mb-4">크롤링된 아이템 정보</p>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Item</h6>
+
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>enName</th>
+                        <th>name</th>
+                        <th>level</th>
+                        <th>description</th>
+                        <th>img</th>
+                        <th>typeName</th>
+                        <th>typeEnName</th>
+                        <th>createdAt</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th>id</th>
+                        <th>enName</th>
+                        <th>name</th>
+                        <th>level</th>
+                        <th>description</th>
+                        <th>img</th>
+                        <th>typeName</th>
+                        <th>typeEnName</th>
+                        <th>createdAt</th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr th:each="item : ${items}">
+                        <td th:text="${item.id}"></td>
+                        <td th:text="${item.enName}"></td>
+                        <td th:text="${item.name}"></td>
+                        <td th:text="${item.level}"></td>
+                        <td th:text="${item.description}"></td>
+                        <td th:text="${item.img}"></td>
+                        <td th:text="${item.typeName}"></td>
+                        <td th:text="${item.typeEnName}"></td>
+                        <td th:text="${item.createdAt}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

@@ -6,12 +6,12 @@
 <div layout:fragment="content">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">캐릭터</h1>
-    <p class="mb-4">크롤링된 캐릭터 정보</p>
+    <h1 class="h3 mb-2 text-gray-800">기술</h1>
+    <p class="mb-4">크롤링된 기술 정보</p>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Playable</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Perk</h6>
 
         </div>
         <div class="card-body">
@@ -22,6 +22,9 @@
                         <th>role</th>
                         <th>enName</th>
                         <th>name</th>
+                        <th>playableId</th>
+                        <th>description</th>
+                        <th>img</th>
                         <th>createdAt</th>
                     </tr>
                     </thead>
@@ -30,15 +33,21 @@
                         <th>role</th>
                         <th>enName</th>
                         <th>name</th>
+                        <th>playableId</th>
+                        <th>description</th>
+                        <th>img</th>
                         <th>createdAt</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    <tr th:each="playable : ${playables}">
-                        <td th:text="${playable.role}"></td>
-                        <td th:text="${playable.enName}"></td>
-                        <td th:text="${playable.name}"></td>
-                        <td th:text="${playable.createdAt}"></td>
+                    <tr th:each="perk : ${perks}">
+                        <td th:text="${perk.role}"></td>
+                        <td th:text="${perk.enName}"></td>
+                        <td th:text="${perk.name}"></td>
+                        <td th:text="${perk.playableId}"></td>
+                        <td th:text="${perk.description}"></td>
+                        <td th:text="${perk.img}"></td>
+                        <td th:text="${perk.createdAt}"></td>
                     </tr>
                     </tbody>
                 </table>

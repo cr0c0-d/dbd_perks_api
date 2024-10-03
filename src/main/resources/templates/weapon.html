@@ -6,12 +6,12 @@
 <div layout:fragment="content">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">캐릭터</h1>
-    <p class="mb-4">크롤링된 캐릭터 정보</p>
+    <h1 class="h3 mb-2 text-gray-800">무기</h1>
+    <p class="mb-4">크롤링된 무기 정보</p>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Playable</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Weapon</h6>
 
         </div>
         <div class="card-body">
@@ -19,26 +19,32 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                     <tr>
-                        <th>role</th>
+                        <th>id</th>
                         <th>enName</th>
                         <th>name</th>
+                        <th>img</th>
+                        <th>killerId</th>
                         <th>createdAt</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        <th>role</th>
+                        <th>id</th>
                         <th>enName</th>
                         <th>name</th>
+                        <th>img</th>
+                        <th>killerId</th>
                         <th>createdAt</th>
                     </tr>
                     </tfoot>
                     <tbody>
-                    <tr th:each="playable : ${playables}">
-                        <td th:text="${playable.role}"></td>
-                        <td th:text="${playable.enName}"></td>
-                        <td th:text="${playable.name}"></td>
-                        <td th:text="${playable.createdAt}"></td>
+                    <tr th:each="weapon : ${weapons}">
+                        <td th:text="${weapon.id}"></td>
+                        <td th:text="${weapon.enName}"></td>
+                        <td th:text="${weapon.name}"></td>
+                        <td th:text="${weapon.img}"></td>
+                        <td th:text="${weapon.killerId}"></td>
+                        <td th:text="${weapon.createdAt}"></td>
                     </tr>
                     </tbody>
                 </table>
