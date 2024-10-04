@@ -3,18 +3,9 @@ package dbd.perks.crawler;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -131,7 +122,7 @@ public class ScrollCrawler {
     private Document getDocumentByFlaskCrawler(String url) {
         RestTemplate restTemplate = new RestTemplate();
 
-        String pythonCrawlUrl = "http://localhost:5001/getDocument/" + url;
+        String pythonCrawlUrl = "http://localhost:5001/getDocument/" + url.replace("https://", "");
 
         String html = restTemplate.getForObject(pythonCrawlUrl, String.class);
 
