@@ -145,7 +145,9 @@ public class SurvivorCrawler {
             Element survNameSpan = survTable.selectFirst("strong span");
             survivor.setEnName(survNameSpan.child(0).ownText());
 
-            playableList.add((Playable) crawlerUtil.getLatestVersion(survivor));
+            survivor = (Playable) crawlerUtil.getLatestVersion(survivor);
+
+            playableList.add(survivor);
 
             Element perkDiv = crawlerUtil.getNextElement(document, survDiv);
 
