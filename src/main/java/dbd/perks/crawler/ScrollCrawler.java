@@ -126,9 +126,12 @@ public class ScrollCrawler {
 
         String html = restTemplate.getForObject(pythonCrawlUrl, String.class);
 
+        if(html == null) {
+            System.out.println("html 불러올 수 없음");
+            return null;
+        }
         // Jsoup을 사용하여 HTML을 Document 객체로 변환
-        Document document = Jsoup.parse(html);
-        return document;
+        return Jsoup.parse(html);
     }
 
 }
