@@ -62,7 +62,7 @@ public class DataController {
                 .body(dataService.getData());
     }
 
-    @GetMapping("/imgs/{name}")
+    @GetMapping("/imgs/{fileName}")
     public ResponseEntity<String> getImageBase64(@PathVariable String fileName) {
         try {
             File file = new File(imgPath + File.separator+ fileName);
