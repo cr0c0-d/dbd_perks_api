@@ -207,6 +207,10 @@ public class KillerCrawler {
 
                 String imgSrc = perkElement.select("noscript img").attr("src");
 
+                if(!imgSrc.isEmpty()) {
+                    imgSrc = crawlerUtil.getImgUrl(imgSrc);
+                }
+
                 Elements nameElement = perkElement.select("tr:nth-of-type(2) td div strong span");
 
                 String name = nameElement.get(0).ownText();
@@ -247,6 +251,9 @@ public class KillerCrawler {
                     Elements spans = perkElement.select("div div div div div span");
                     // 이미지 경로
                     String imgSrc = spans.select("noscript img").attr("src");
+                    if(!imgSrc.isEmpty()) {
+                        imgSrc = crawlerUtil.getImgUrl(imgSrc);
+                    }
 
                     // 241003 임시 - 기사 문서 오류로 퍽 두개밖에 없음
                     if(spans.select("span strong").isEmpty()) {
@@ -297,6 +304,10 @@ public class KillerCrawler {
         Elements wpTableTds = wpDiv.select("table tbody").get(1).select("td");
 
         String img = wpTableTds.get(0).select("noscript img").attr("src");
+        if(!img.isEmpty()) {
+            img = crawlerUtil.getImgUrl(img);
+        }
+
         Element nameElement = wpTableTds.get(1).selectFirst("div span");
         String name = nameElement.selectFirst("strong").wholeText();
         String enName = nameElement.select("span").get(nameElement.select("span").size()-1).wholeText();
@@ -334,6 +345,10 @@ public class KillerCrawler {
                 switch(i) {
                     case 0 :
                         String img = td.select("noscript img").attr("src");
+                        if(!img.isEmpty()) {
+                            img = crawlerUtil.getImgUrl(img);
+                        }
+
                         addon.setImg(img);
                         break;
                     case 1 :

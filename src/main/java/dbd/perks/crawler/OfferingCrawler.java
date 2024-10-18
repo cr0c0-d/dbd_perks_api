@@ -144,6 +144,10 @@ public class OfferingCrawler {
 
                 if(imgEl != null) {
                     img = imgEl.attr("src");
+                    if(!img.isEmpty()) {
+                        img = crawlerUtil.getImgUrl(img);
+                    }
+
                 } else {
                     // 이미지 없는 경우 영문위키에서 따올 것.
                     if(enName != null) {
@@ -156,6 +160,9 @@ public class OfferingCrawler {
                             String str = aTag.html();
                             if(str.contains(enName)) {
                                 img = aTag.parent().parent().selectFirst("img").attr("data-src");
+                                if(!img.isEmpty()) {
+                                    img = crawlerUtil.getImgUrl(img);
+                                }
                             }
                         }
                     }
