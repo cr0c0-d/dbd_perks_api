@@ -18,7 +18,7 @@ public class WeaponFindResponse {
     public WeaponFindResponse(Weapon weapon, Playable killer) {
         this.name = weapon.getName();
         this.en_name = weapon.getEnName();
-        this.character = killer.getEnName();
+        this.character = killer.getName();
         this.description = "";
         this.img = weapon.getImg();
     }
