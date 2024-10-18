@@ -6,16 +6,18 @@ import dbd.perks.service.DataService;
 import dbd.perks.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Base64;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,12 +65,19 @@ public class DataController {
     }
 
     @GetMapping("/imgs/{fileName}")
-    public ResponseEntity<String> getImageBase64(@PathVariable String fileName) {
+    public ResponseEntity<Resource> getImageFile(@PathVariable String fileName) {
         try {
-            File file = new File(imgPath + File.separator+ fileName);
-            byte[] fileContent = Files.readAllBytes(file.toPath());
-            String base64String = Base64.getEncoder().encodeToString(fileContent);
-            return ResponseEntity.ok("data:image/jpeg;base64," + base64String);
+            Path filePath = Paths.get(imgPath).resolve(fileName);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
