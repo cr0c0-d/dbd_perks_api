@@ -95,6 +95,9 @@ public class CommonPerksCrawler {
                                 .build();
 
                         String imgSrc = perkElement.select("noscript img").attr("src");
+                        if(!imgSrc.isEmpty()) {
+                            imgSrc = crawlerUtil.getImgUrl(imgSrc);
+                        }
 
                         Elements nameElement = perkElement.select("tr:nth-of-type(2) td div strong span");
 
