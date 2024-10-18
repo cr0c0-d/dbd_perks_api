@@ -5,10 +5,16 @@ import dbd.perks.dto.WholeDataFindResponse;
 import dbd.perks.service.DataService;
 import dbd.perks.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Base64;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,4 +58,17 @@ public class DataController {
         return ResponseEntity.ok()
                 .body(dataService.getData());
     }
+
+    @GetMapping("/imgs/{name}")
+    public ResponseEntity<String> getImageBase64(@PathVariable String fileName) {
+        try {
+            File file = new File("src/main/resources/static/imgs/" + fileName);
+            byte[] fileContent = Files.readAllBytes(file.toPath());
+            String base64String = Base64.getEncoder().encodeToString(fileContent);
+            return ResponseEntity.ok("data:image/jpeg;base64," + base64String);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
