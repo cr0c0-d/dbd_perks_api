@@ -7,8 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -16,6 +22,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CrawlerUtil {
+
+    @Value("${img.path}")
+    String imgPath;
 
     private final PlayableRepository playableRepository;
     private final PerkRepository perkRepository;
@@ -222,6 +231,28 @@ public class CrawlerUtil {
 //        } else {
 //            return null;
 //        }
+    }
+
+    public String getImgUrl(String imgUrl) {
+        try {
+            URL url = new URL(imgUrl.startsWith("http") ? imgUrl : "https:" + imgUrl);
+            InputStream in = url.openStream();
+            String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+            File file = new File("src/main/resources/static/imgs" + File.separator + fileName);
+
+            // 파일 저장
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                byte[] buffer = new byte[2048];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            }
+            return "/imgs/" + file.getName();
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 

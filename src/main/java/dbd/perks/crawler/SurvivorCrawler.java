@@ -176,6 +176,9 @@ public class SurvivorCrawler {
                         .build();
 
                 String imgSrc = table.select("noscript img").attr("src");
+                if(!imgSrc.isEmpty()) {
+                    imgSrc = crawlerUtil.getImgUrl(imgSrc);
+                }
 
                 Elements nameElement = table.select("tr:nth-of-type(2) td div strong span");
 
@@ -209,6 +212,9 @@ public class SurvivorCrawler {
                     Elements spans = perkElement.select("div div div div div span");
                     // 이미지 경로
                     String imgSrc = spans.select("noscript img").attr("src");
+                    if(!imgSrc.isEmpty()) {
+                        imgSrc = crawlerUtil.getImgUrl(imgSrc);
+                    }
 
                     // 한글명
                     Elements nameSpans = spans.select("span strong");
@@ -280,6 +286,9 @@ public class SurvivorCrawler {
                     Elements tds = tr.select("td");
 
                     String img = imgEl.attr("src");
+                    if(!img.isEmpty()) {
+                        img = crawlerUtil.getImgUrl(img);
+                    }
 
                     String name = null;
                     String enName = null;
@@ -323,6 +332,9 @@ public class SurvivorCrawler {
                 for (Element table : tables) {
                     Elements trs = table.select("tr");
                     String img = trs.get(0).select("noscript img").attr("src");
+                    if(!img.isEmpty()) {
+                        img = crawlerUtil.getImgUrl(img);
+                    }
 
                     Element nameElement = trs.get(0).child(1).selectFirst("div span");
                     String name = nameElement.child(0).text();
@@ -376,6 +388,10 @@ public class SurvivorCrawler {
 
                     String img = imgEl.attr("src");
 
+                    if(!img.isEmpty()) {
+                        img = crawlerUtil.getImgUrl(img);
+                    }
+
                     String name = null;
                     String enName = null;
 
@@ -418,6 +434,11 @@ public class SurvivorCrawler {
                 for (Element addonTable : addonTables) {
                     Elements trs = addonTable.select("tr");
                     String img = trs.get(0).select("noscript img").attr("src");
+
+                    if(!img.isEmpty()) {
+                        img = crawlerUtil.getImgUrl(img);
+                    }
+
 
                     Element nameElement = trs.get(0).child(1).selectFirst("div span");
                     String name = nameElement.child(0).text();
