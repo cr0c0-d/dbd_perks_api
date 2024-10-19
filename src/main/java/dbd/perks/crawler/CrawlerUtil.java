@@ -4,12 +4,14 @@ import dbd.perks.domain.*;
 import dbd.perks.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -17,6 +19,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -233,26 +236,60 @@ public class CrawlerUtil {
 //        }
     }
 
+//    /**
+//     * 이미지 url을 받아 파일로 저장하고 경로를 반환하는 메서드
+//     * @param imgUrl
+//     * @return
+//     */
+//    public String getImgUrl(String imgUrl) {
+//        try {
+//            URL url = new URL(imgUrl.startsWith("http") ? imgUrl : "https:" + imgUrl);
+//            InputStream in = url.openStream();
+//            String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+//            File file = new File("src/main/resources/static/imgs" + File.separator + fileName);
+//
+//            // 파일 저장
+//            try (FileOutputStream out = new FileOutputStream(file)) {
+//                byte[] buffer = new byte[2048];
+//                int bytesRead;
+//                while ((bytesRead = in.read(buffer)) != -1) {
+//                    out.write(buffer, 0, bytesRead);
+//                }
+//            }
+//            return "/imgs/" + file.getName();
+//
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+
     public String getImgUrl(String imgUrl) {
         try {
+
             URL url = new URL(imgUrl.startsWith("http") ? imgUrl : "https:" + imgUrl);
+
             InputStream in = url.openStream();
             String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
             File file = new File("src/main/resources/static/imgs" + File.separator + fileName);
 
             // 파일 저장
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                byte[] buffer = new byte[2048];
-                int bytesRead;
-                while ((bytesRead = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                }
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[2048];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
             }
-            return "/imgs/" + file.getName();
+
+            byte[] imageBytes = out.toByteArray();
+
+            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            return "data:image/jpeg;base64," + base64Image;
 
         } catch (Exception e) {
             return null;
         }
+
+
     }
 
 

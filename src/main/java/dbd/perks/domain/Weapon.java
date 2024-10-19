@@ -26,7 +26,8 @@ public class Weapon implements Data {
     @Column(name = "en_name")
     private String enName;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private String img;
 
     @Column(name = "killer_id")

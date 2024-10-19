@@ -36,7 +36,8 @@ public class Perk implements Data  {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private String img;
 
     @Column(name = "is_activated", columnDefinition = "Boolean")
