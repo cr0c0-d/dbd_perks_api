@@ -16,8 +16,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+
         registry.addMapping("/**")
-                .allowedOrigins("https://dbd-random-perks-kr.netlify.app", "http://dbd-random-perks-kr.netlify.app", allowed)
+                .allowedOrigins(allowed.split(","))
                 .allowCredentials(true)
                 .allowedHeaders("Authorization")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE");

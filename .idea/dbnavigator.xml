@@ -28,7 +28,7 @@ select * from perk;
 delete from perk;]]></console>
     </connection>
     <connection id="bc1bea6f-bbb3-4405-8eaf-6f4dc692ea73">
-      <console name="Connection 1" type="STANDARD" schema="ebdb" session="Main" />
+      <console name="Connection 1" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -37,9 +37,7 @@ delete from perk;]]></console>
     </last-used-providers>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="bc1bea6f-bbb3-4405-8eaf-6f4dc692ea73" object-ref="consoles/Connection 1" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="c3d0fb40-d859-4e9f-9300-d7875f3110c8" />
