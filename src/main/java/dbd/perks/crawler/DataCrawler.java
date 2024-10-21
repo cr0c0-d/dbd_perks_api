@@ -2,6 +2,7 @@ package dbd.perks.crawler;
 
 import dbd.perks.domain.*;
 import dbd.perks.repository.*;
+import dbd.perks.service.DataService;
 import dbd.perks.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class DataCrawler {
     private final CrawlerUtil crawlerUtil;
     private final ScrollCrawler scrollCrawler;
     private final EmailService emailService;
+    private final DataService dataService;
 
     @Async
     @Transactional
@@ -39,6 +41,8 @@ public class DataCrawler {
         Map<String, Integer> curActivated = getActivatedDataCount();
 
         verifyData(lastActivated, curActivated);
+
+        dataService.setData();
     }
 
     public void runKillerCrawler() {

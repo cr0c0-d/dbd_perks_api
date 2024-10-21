@@ -3,6 +3,7 @@ package dbd.perks.service;
 import dbd.perks.domain.*;
 import dbd.perks.dto.*;
 import dbd.perks.repository.*;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class DataService {
         return wholeDataFindResponse;
     }
 
+    @PostConstruct
     public void setData() {
         wholeDataFindResponse = new WholeDataFindResponse(getSurvivorData(), getKillerData());
     }
