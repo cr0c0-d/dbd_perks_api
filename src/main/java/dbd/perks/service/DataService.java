@@ -13,6 +13,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataService {
 
+    private static WholeDataFindResponse wholeDataFindResponse = null;
+
     private final AddonRepository addonRepository;
     private final ItemRepository itemRepository;
     private final OfferingRepository offeringRepository;
@@ -21,7 +23,14 @@ public class DataService {
     private final WeaponRepository weaponRepository;
 
     public WholeDataFindResponse getData() {
-        return new WholeDataFindResponse(getSurvivorData(), getKillerData());
+        if(wholeDataFindResponse == null) {
+            setData();
+        }
+        return wholeDataFindResponse;
+    }
+
+    public void setData() {
+        wholeDataFindResponse = new WholeDataFindResponse(getSurvivorData(), getKillerData());
     }
 
     public SurvivorFindResponse getSurvivorData() {
