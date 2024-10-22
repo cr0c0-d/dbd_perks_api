@@ -372,8 +372,8 @@ public class SurvivorCrawler {
 
             Elements addonTables = curDiv.select("table");
 
-            if(tables.size() == 1) {
-                Element table = tables.get(0);
+            if(addonTables.size() == 1) {
+                Element table = addonTables.get(0);
                 Elements trs = table.select("tr");
 
                 for(Element tr : trs) {
