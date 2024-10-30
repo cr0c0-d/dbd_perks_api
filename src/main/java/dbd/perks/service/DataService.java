@@ -4,7 +4,10 @@ import dbd.perks.domain.*;
 import dbd.perks.dto.*;
 import dbd.perks.repository.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -13,6 +16,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DataService {
+
+    private final CrawledDocumentRepository crawledDocumentRepository;
+    @Value("${jasypt.encryptor.password}")
+    private String password;
 
     private static WholeDataFindResponse wholeDataFindResponse = null;
 
@@ -87,5 +94,44 @@ public class DataService {
         List<PlayableFindResponse> playableFindResponseList = playableList.stream().map(PlayableFindResponse::new).toList();
 
         return new KillerFindResponse(playableFindResponseList, perkFindResponseList, weaponFindResponseList, addonKillerFindResponseList, offeringFindResponseList);
+    }
+
+    public boolean dataMigration(WholeDataTransferRequest data, HttpServletRequest httpServletRequest) {
+        Cookie[] cookies = httpServletRequest.getCookies();
+        String pwValue = "";
+        for(Cookie cookie : cookies) {
+            if("pw".equals(cookie.getName())) {
+                pwValue = cookie.getValue();
+                break;
+            }
+        }
+        if(!pwValue.equals(password)) {
+            return false;
+        } else {
+            int count = 0;
+
+            addonRepository.deleteAll();
+            count += addonRepository.saveAll(data.getAddonList()).size();
+
+            crawledDocumentRepository.deleteAll();
+            count += crawledDocumentRepository.saveAll(data.getCrawledDocumentList()).size();
+
+            itemRepository.deleteAll();
+            count += itemRepository.saveAll(data.getItemList()).size();
+
+            offeringRepository.deleteAll();
+            count += offeringRepository.saveAll(data.getOfferingList()).size();
+
+            perkRepository.deleteAll();
+            count += perkRepository.saveAll(data.getPerkList()).size();
+
+            playableRepository.deleteAll();
+            count += playableRepository.saveAll(data.getPlayableList()).size();
+
+            weaponRepository.deleteAll();
+            count += weaponRepository.saveAll(data.getWeaponList()).size();
+
+            return count == data.getCount();
+        }
     }
 }

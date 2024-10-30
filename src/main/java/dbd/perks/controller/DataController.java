@@ -2,8 +2,10 @@ package dbd.perks.controller;
 
 import dbd.perks.crawler.DataCrawler;
 import dbd.perks.dto.WholeDataFindResponse;
+import dbd.perks.dto.WholeDataTransferRequest;
 import dbd.perks.service.DataService;
 import dbd.perks.service.EmailService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -12,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -81,6 +81,12 @@ public class DataController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping("/data/migration")
+    public ResponseEntity<String> dataMigration(@RequestBody WholeDataTransferRequest wholeDataTransferRequest, HttpServletRequest httpServletRequest) {
+        boolean result = dataService.dataMigration(wholeDataTransferRequest, httpServletRequest);
+        return result ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
 }
