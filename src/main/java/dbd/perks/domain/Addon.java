@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Addon implements Data {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
@@ -95,7 +95,7 @@ public class Addon implements Data {
     @Override
     public Boolean validate() {
         return this.name != null
-                && this.enName != null
+                //&& this.enName != null
                 && this.level != null
                 && ((this.typeName != null && this.typeEnName != null) || this.killerId != null)
                 && this.description != null
