@@ -131,6 +131,7 @@ public class DataService {
             weaponRepository.deleteAll();
             count += weaponRepository.saveAll(data.getWeaponList()).size();
 
+            setData();
             return count == data.getCount();
         }
     }
