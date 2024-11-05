@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class Playable implements Data {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
