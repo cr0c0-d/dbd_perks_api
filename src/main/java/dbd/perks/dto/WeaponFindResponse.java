@@ -12,6 +12,7 @@ public class WeaponFindResponse {
     private String name;
     private String en_name;
     private String character;
+    private String en_character;
     private String description;
     private String img;
 
@@ -19,6 +20,7 @@ public class WeaponFindResponse {
         this.name = weapon.getName();
         this.en_name = weapon.getEnName();
         this.character = killer.getName();
+        this.en_character = killer.getEnName();
         this.description = "";
         this.img = weapon.getImg();
     }
