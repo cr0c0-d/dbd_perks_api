@@ -301,7 +301,7 @@ public class KillerCrawler {
 
         Element wpDiv = crawlerUtil.getContentsElement(document, "무기 & 능력");
 
-        Elements wpTableTds = wpDiv.select("table tbody").get(1).select("td");
+        Elements wpTableTds = wpDiv.select("table tbody").size() > 3 ? wpDiv.select("table tbody").get(2).select("td") : wpDiv.select("table tbody").get(1).select("td") ;
 
         String img = wpTableTds.get(0).select("noscript img").attr("src");
         if(!img.isEmpty()) {
@@ -344,7 +344,8 @@ public class KillerCrawler {
                 Element td = tds.get(i);
                 switch(i) {
                     case 0 :
-                        String img = td.select("noscript img").attr("src");
+                        Elements imgs = td.select("img");
+                        String img = imgs.size() > 3 ? imgs.get(imgs.size()-1).attr("src") : td.select("noscript img").attr("src");
                         if(!img.isEmpty()) {
                             img = crawlerUtil.getImgUrl(img);
                         }
